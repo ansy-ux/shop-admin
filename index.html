@@ -6,13 +6,12 @@
   <title>ShopAdmin — 관리자</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
   <style>
-    /* ─── Design Tokens ─────────────────────────────────────────────── */
+    /* ─── Design Tokens ──────────────────────────────────────────── */
     :root {
       --primary:          #0a0a0a;
       --on-primary:       #ffffff;
       --brand-green:      #00d4a4;
       --brand-green-deep: #00b48a;
-      --brand-green-soft: #7cebcb;
       --brand-tag:        #3772cf;
       --brand-warn:       #c37d0d;
       --brand-error:      #d45656;
@@ -20,7 +19,6 @@
       --canvas-dark:      #0a0a0a;
       --surface:          #f7f7f7;
       --surface-soft:     #fafafa;
-      --surface-code:     #1c1c1e;
       --hairline:         #e5e5e5;
       --hairline-soft:    #ededed;
       --hairline-dark:    #1f1f1f;
@@ -37,7 +35,6 @@
       --r-sm:   6px;
       --r-md:   8px;
       --r-lg:   12px;
-      --r-xl:   16px;
       --r-full: 9999px;
 
       --sp-xxs: 4px;
@@ -47,364 +44,266 @@
       --sp-lg:  20px;
       --sp-xl:  24px;
       --sp-xxl: 32px;
+
+      --sidebar-w: 240px;
+      --topbar-h:  56px;
     }
 
-    /* ─── Reset ─────────────────────────────────────────────────────── */
+    /* ─── Reset ──────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { height: 100%; }
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--ink);
-      background: var(--surface);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-size: 14px; line-height: 1.5;
+      color: var(--ink); background: var(--surface);
+      display: flex; flex-direction: column;
+      height: 100vh; overflow: hidden;
     }
     a { text-decoration: none; color: inherit; }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
-    input  { font-family: inherit; }
-    svg    { display: block; flex-shrink: 0; }
+    input, select { font-family: inherit; }
+    svg { display: block; flex-shrink: 0; }
 
-    /* ─── Notification Banner ────────────────────────────────────────── */
+    /* ─── Notification Banner ────────────────────────────────────── */
     .notif-banner {
-      background: var(--canvas-dark);
-      color: var(--on-dark);
-      font-size: 13px;
-      font-weight: 500;
+      background: var(--canvas-dark); color: var(--on-dark);
+      font-size: 13px; font-weight: 500;
       padding: 0 var(--sp-xxl);
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--sp-sm);
-      flex-shrink: 0;
-      position: relative;
+      height: 36px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      gap: var(--sp-sm); position: relative;
     }
-    .notif-banner .notif-label {
-      background: var(--brand-green);
-      color: var(--primary);
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: var(--r-full);
-      padding: 2px 8px;
+    .notif-label {
+      background: var(--brand-green); color: var(--primary);
+      font-size: 11px; font-weight: 600;
+      border-radius: var(--r-full); padding: 2px 8px;
     }
-    .notif-banner .notif-link {
-      color: var(--brand-green);
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-    .notif-banner .notif-close {
-      position: absolute;
-      right: var(--sp-xl);
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--on-dark-muted);
-      padding: 4px;
-      border-radius: var(--r-sm);
-      line-height: 0;
+    .notif-link { color: var(--brand-green); text-decoration: underline; text-underline-offset: 2px; }
+    .notif-close {
+      position: absolute; right: var(--sp-xl); top: 50%; transform: translateY(-50%);
+      color: var(--on-dark-muted); padding: 4px; border-radius: var(--r-sm); line-height: 0;
     }
 
-    /* ─── App Shell (Grid) ───────────────────────────────────────────── */
+    /* ─── App Shell ──────────────────────────────────────────────── */
     .app-shell {
-      flex: 1;
+      flex: 1; min-height: 0;
       display: grid;
-      grid-template-columns: 200px 1fr;
-      grid-template-rows: 56px 44px 1fr;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--topbar-h) 1fr;
       grid-template-areas:
-        "topbar  topbar"
-        "nav1    nav1"
+        "topbar topbar"
         "sidebar main";
-      min-height: 0;
     }
 
-    /* ─── Topbar ─────────────────────────────────────────────────────── */
+    /* ─── Topbar ─────────────────────────────────────────────────── */
     .topbar {
       grid-area: topbar;
-      background: var(--canvas);
-      border-bottom: 1px solid var(--hairline);
-      display: flex;
-      align-items: center;
-      padding: 0 var(--sp-xl);
-      gap: var(--sp-md);
-      position: sticky;
-      top: 0;
+      background: var(--canvas); border-bottom: 1px solid var(--hairline);
+      display: flex; align-items: center;
+      padding: 0 var(--sp-xl); gap: var(--sp-md);
       z-index: 100;
     }
     .topbar-logo {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-xs);
+      display: flex; align-items: center; gap: var(--sp-xs);
+      width: calc(var(--sidebar-w) - var(--sp-xl) - var(--sp-sm));
       flex-shrink: 0;
-      margin-right: var(--sp-md);
     }
     .logo-mark {
       width: 26px; height: 26px;
-      background: var(--primary);
-      border-radius: var(--r-sm);
+      background: var(--primary); border-radius: var(--r-sm);
       display: flex; align-items: center; justify-content: center;
     }
     .logo-text { font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.4px; }
 
-    /* Integrated search */
-    .search-wrap {
-      flex: 1;
-      max-width: 360px;
-      position: relative;
-    }
+    .search-wrap { flex: 1; max-width: 380px; position: relative; }
     .search-wrap label {
-      position: absolute;
-      left: 10px; top: 50%;
-      transform: translateY(-50%);
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
       display: flex; align-items: center; gap: 5px;
-      color: var(--muted);
-      font-size: 13px;
-      pointer-events: none;
+      color: var(--muted); font-size: 13px; pointer-events: none;
     }
     .search-input {
-      width: 100%;
-      height: 36px;
-      background: var(--surface);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-md);
-      padding: 0 var(--sp-md) 0 32px;
-      font-size: 13px;
-      color: var(--ink);
-      outline: none;
+      width: 100%; height: 36px;
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: var(--r-md); padding: 0 var(--sp-md) 0 32px;
+      font-size: 13px; color: var(--ink); outline: none;
       transition: border-color 150ms;
     }
-    .search-input:focus {
-      border-color: var(--brand-green);
-      border-width: 2px;
-      background: var(--canvas);
-    }
+    .search-input:focus { border-color: var(--brand-green); border-width: 2px; background: var(--canvas); }
     .search-input::placeholder { color: var(--muted); }
 
     .topbar-spacer { flex: 1; }
+    .topbar-divider { width: 1px; height: 18px; background: var(--hairline); }
 
-    /* Topbar action buttons */
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-xs);
-    }
     .btn-topbar {
       display: flex; align-items: center; gap: 5px;
-      height: 32px;
-      padding: 0 var(--sp-sm);
+      height: 32px; padding: 0 var(--sp-sm);
       border-radius: var(--r-sm);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--steel);
-      background: transparent;
+      font-size: 13px; font-weight: 500; color: var(--steel);
     }
     .btn-topbar:hover { background: var(--surface); color: var(--ink); }
-    .btn-logout {
-      display: flex; align-items: center; gap: 5px;
-      height: 32px;
-      padding: 0 var(--sp-sm);
-      border-radius: var(--r-sm);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--steel);
-      background: transparent;
-    }
-    .topbar-divider {
-      width: 1px; height: 18px;
-      background: var(--hairline);
-    }
+
     .avatar {
-      width: 30px; height: 30px;
-      border-radius: var(--r-full);
+      width: 30px; height: 30px; border-radius: var(--r-full);
       background: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-green-deep) 100%);
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 700; color: var(--primary);
-      cursor: pointer;
-      flex-shrink: 0;
+      cursor: pointer; flex-shrink: 0;
     }
 
-    /* ─── 1Depth Nav ─────────────────────────────────────────────────── */
-    .nav-1depth {
-      grid-area: nav1;
-      background: var(--canvas);
-      border-bottom: 1px solid var(--hairline);
-      display: flex;
-      align-items: stretch;
-      padding: 0 var(--sp-xl);
-      overflow-x: auto;
-      scrollbar-width: none;
-      position: sticky;
-      top: 56px;
-      z-index: 90;
-    }
-    .nav-1depth::-webkit-scrollbar { display: none; }
-    .nav1-item {
-      display: flex; align-items: center;
-      padding: 0 var(--sp-md);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--steel);
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: color 120ms, border-color 120ms;
-    }
-    .nav1-item:hover { color: var(--ink); }
-    .nav1-item.active {
-      color: var(--ink);
-      border-bottom-color: var(--ink);
-      font-weight: 600;
-    }
-
-    /* ─── Sidebar ────────────────────────────────────────────────────── */
+    /* ─── Sidebar ────────────────────────────────────────────────── */
     .sidebar {
       grid-area: sidebar;
-      background: var(--canvas);
-      border-right: 1px solid var(--hairline);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      position: sticky;
-      top: 100px; /* topbar(56) + nav1(44) */
-      height: calc(100vh - 100px);
+      background: var(--canvas); border-right: 1px solid var(--hairline);
+      display: flex; flex-direction: column;
+      overflow-y: auto; overflow-x: hidden;
     }
-    .sidebar-nav { flex: 1; padding: var(--sp-sm) var(--sp-xs); }
 
-    .nav2-section { margin-bottom: var(--sp-xxs); }
-    .nav2-section-header {
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--steel);
-      padding: var(--sp-md) var(--sp-md) var(--sp-xxs);
-    }
-    .nav2-item {
+    /* Accordion nav */
+    .sidebar-nav { flex: 1; padding: var(--sp-xs) var(--sp-xs) var(--sp-sm); }
+
+    /* 1Depth item */
+    .acc-item { overflow: hidden; }
+    .acc1-btn {
+      width: 100%;
       display: flex; align-items: center; gap: var(--sp-xs);
-      padding: var(--sp-xs) var(--sp-md);
+      padding: 9px var(--sp-md);
       border-radius: var(--r-sm);
-      font-size: 14px;
+      font-size: 14px; font-weight: 500;
       color: var(--steel);
-      cursor: pointer;
-      margin-bottom: 1px;
+      text-align: left;
       transition: background 100ms, color 100ms;
     }
-    .nav2-item:hover { background: var(--surface); color: var(--ink); }
-    .nav2-item.active {
-      background: var(--surface);
-      color: var(--ink);
-      font-weight: 500;
+    .acc1-btn:hover { background: var(--surface); color: var(--ink); }
+    .acc1-btn.open  { color: var(--ink); background: var(--surface-soft); }
+    .acc1-btn .acc1-label { flex: 1; }
+    .acc1-icon { flex-shrink: 0; opacity: 0.6; }
+    .acc1-btn.open .acc1-icon { opacity: 1; }
+    .chevron {
+      flex-shrink: 0; color: var(--muted);
+      transition: transform 220ms ease;
     }
+    .acc1-btn.open .chevron { transform: rotate(90deg); color: var(--steel); }
+
+    /* 1Depth body (2Depth + 3Depth container) */
+    .acc1-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 260ms ease;
+    }
+    .acc1-body.open { max-height: 600px; }
+
+    /* 2Depth section header */
+    .acc2-header {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--muted);
+      padding: 10px var(--sp-md) 3px calc(var(--sp-md) + 24px);
+    }
+
+    /* 3Depth item */
+    .acc3-item {
+      display: flex; align-items: center;
+      padding: 6px var(--sp-md) 6px calc(var(--sp-md) + 24px);
+      border-radius: var(--r-sm);
+      font-size: 13px; color: var(--steel);
+      cursor: pointer;
+      transition: background 80ms, color 80ms;
+      position: relative;
+    }
+    .acc3-item:hover { background: var(--surface); color: var(--ink); }
+    .acc3-item.active {
+      color: var(--brand-green-deep);
+      font-weight: 500;
+      background: rgba(0, 212, 164, 0.06);
+    }
+    .acc3-item.active::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--sp-md) + 20px);
+      top: 50%; transform: translateY(-50%);
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--brand-green);
+    }
+
+    /* Active 1Depth indicator */
+    .acc1-btn.has-active { color: var(--ink); }
+    .acc1-btn.has-active .acc1-icon { opacity: 1; }
 
     /* Sidebar utilities */
     .sidebar-util {
       border-top: 1px solid var(--hairline);
-      padding: var(--sp-sm) var(--sp-xs);
+      padding: var(--sp-xs) var(--sp-xs) var(--sp-sm);
+      flex-shrink: 0;
     }
     .sidebar-util-header {
       font-size: 11px; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--muted);
-      padding: var(--sp-xs) var(--sp-md) var(--sp-xxs);
+      color: var(--muted); padding: var(--sp-xs) var(--sp-md) var(--sp-xxs);
     }
     .util-item {
       display: flex; align-items: center; justify-content: space-between;
       padding: 7px var(--sp-md);
       border-radius: var(--r-sm);
-      font-size: 13px;
-      color: var(--steel);
-      cursor: pointer;
-      transition: background 100ms, color 100ms;
+      font-size: 13px; color: var(--steel); cursor: pointer;
+      transition: background 80ms, color 80ms;
     }
     .util-item:hover { background: var(--surface); color: var(--ink); }
-    .util-item .external-icon { color: var(--muted); }
+    .ext-icon { color: var(--muted); }
 
-    /* ─── Main Content ───────────────────────────────────────────────── */
+    /* ─── Main ───────────────────────────────────────────────────── */
     .main {
       grid-area: main;
-      padding: var(--sp-xxl);
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: var(--sp-xxl);
+      padding: var(--sp-xxl);
+      display: flex; flex-direction: column; gap: var(--sp-xxl);
     }
 
-    /* ─── Page Header ────────────────────────────────────────────────── */
-    .page-header {
-      display: flex; align-items: flex-end;
-      justify-content: space-between;
-    }
-    .page-header h1 {
-      font-size: 22px; font-weight: 600;
-      letter-spacing: -0.5px; color: var(--ink);
-    }
-    .page-header p { font-size: 13px; color: var(--stone); margin-top: 3px; }
+    /* ─── Page Header ────────────────────────────────────────────── */
+    .page-header { display: flex; align-items: flex-end; justify-content: space-between; }
+    .page-header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
+    .page-header p  { font-size: 13px; color: var(--stone); margin-top: 3px; }
     .header-actions { display: flex; align-items: center; gap: var(--sp-xs); }
 
-    /* ─── Buttons ────────────────────────────────────────────────────── */
+    /* ─── Buttons ────────────────────────────────────────────────── */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--primary); color: var(--on-primary);
       font-size: 14px; font-weight: 500;
-      border-radius: var(--r-full); padding: 8px 18px; height: 36px;
+      border-radius: var(--r-full); padding: 8px 18px; height: 36px; cursor: pointer;
     }
     .btn-secondary {
       display: inline-flex; align-items: center; gap: 6px;
       background: transparent; color: var(--ink);
       font-size: 14px; font-weight: 500;
       border: 1px solid var(--hairline);
-      border-radius: var(--r-full); padding: 8px 18px; height: 36px;
-      cursor: pointer;
+      border-radius: var(--r-full); padding: 8px 18px; height: 36px; cursor: pointer;
     }
     .btn-accent {
       display: inline-flex; align-items: center; gap: 6px;
       background: var(--brand-green); color: var(--primary);
       font-size: 14px; font-weight: 500;
-      border-radius: var(--r-full); padding: 8px 18px; height: 36px;
-      cursor: pointer;
+      border-radius: var(--r-full); padding: 8px 18px; height: 36px; cursor: pointer;
     }
-    .btn-ghost {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: transparent; color: var(--steel);
-      font-size: 13px; font-weight: 500;
-      border-radius: var(--r-md); padding: 7px var(--sp-sm);
-      cursor: pointer;
-    }
-    .btn-ghost:hover { background: var(--surface); color: var(--ink); }
 
-    /* ─── Alert Strip ────────────────────────────────────────────────── */
+    /* ─── Alert ──────────────────────────────────────────────────── */
     .alert-strip {
-      background: rgba(195, 125, 13, 0.06);
-      border: 1px solid rgba(195, 125, 13, 0.2);
-      border-radius: var(--r-md);
-      padding: var(--sp-sm) var(--sp-md);
+      background: rgba(195,125,13,0.06); border: 1px solid rgba(195,125,13,0.2);
+      border-radius: var(--r-md); padding: var(--sp-sm) var(--sp-md);
       display: flex; align-items: center; gap: var(--sp-sm);
       font-size: 14px; color: var(--brand-warn);
     }
     .alert-strip strong { font-weight: 600; }
     .alert-strip a { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--brand-warn); text-decoration: underline; }
 
-    /* ─── KPI Grid ───────────────────────────────────────────────────── */
+    /* ─── KPI Grid ───────────────────────────────────────────────── */
     .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--sp-md); }
     .kpi-card {
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-lg);
-      padding: var(--sp-xl);
+      background: var(--canvas); border: 1px solid var(--hairline);
+      border-radius: var(--r-lg); padding: var(--sp-xl);
     }
-    .kpi-card.featured {
-      border-color: var(--brand-green);
-      box-shadow: rgba(0,212,164,0.08) 0 8px 24px;
-    }
-    .kpi-label {
-      font-size: 13px; color: var(--steel);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .kpi-icon {
-      width: 28px; height: 28px; border-radius: var(--r-md);
-      display: flex; align-items: center; justify-content: center;
-    }
+    .kpi-card.featured { border-color: var(--brand-green); box-shadow: rgba(0,212,164,0.08) 0 8px 24px; }
+    .kpi-label { font-size: 13px; color: var(--steel); display: flex; align-items: center; justify-content: space-between; }
+    .kpi-icon { width: 28px; height: 28px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; }
     .kpi-icon.green { background: rgba(0,212,164,0.1); color: var(--brand-green-deep); }
     .kpi-icon.blue  { background: rgba(55,114,207,0.1); color: var(--brand-tag); }
     .kpi-icon.warn  { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
@@ -416,49 +315,31 @@
     .delta.down { background: rgba(212,86,86,0.08); color: var(--brand-error); }
     .kpi-compare { font-size: 12px; color: var(--stone); }
 
-    /* ─── Cards ──────────────────────────────────────────────────────── */
-    .card {
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-lg);
-      padding: var(--sp-xl);
-    }
-    .card-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: var(--sp-xl);
-    }
+    /* ─── Cards ──────────────────────────────────────────────────── */
+    .card { background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-lg); padding: var(--sp-xl); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--sp-xl); }
     .card-title { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
     .card-subtitle { font-size: 13px; color: var(--stone); margin-top: 2px; }
-
-    /* Pill tabs */
     .pill-tabs { display: flex; gap: 4px; }
     .pill-tab {
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-full);
-      padding: 5px 14px;
-      font-size: 13px; font-weight: 500; color: var(--steel);
-      cursor: pointer;
+      background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-full);
+      padding: 5px 14px; font-size: 13px; font-weight: 500; color: var(--steel); cursor: pointer;
     }
     .pill-tab.active { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
 
-    /* ─── Chart ──────────────────────────────────────────────────────── */
+    /* ─── Chart ──────────────────────────────────────────────────── */
     .chart-wrapper { position: relative; padding-left: 44px; }
     .chart-y-labels {
       display: flex; flex-direction: column; justify-content: space-between;
-      height: 200px;
-      position: absolute; left: 0; top: 0;
+      height: 200px; position: absolute; left: 0; top: 0;
       font-size: 11px; color: var(--muted); pointer-events: none;
     }
     .chart-area { width: 100%; height: 200px; }
     .chart-area svg { width: 100%; height: 100%; }
-    .chart-x-labels {
-      display: flex; justify-content: space-between;
-      padding-left: 44px; margin-top: var(--sp-xs);
-    }
+    .chart-x-labels { display: flex; justify-content: space-between; padding-left: 44px; margin-top: var(--sp-xs); }
     .chart-x-labels span { font-size: 11px; color: var(--muted); text-align: center; flex: 1; }
 
-    /* ─── Donut ──────────────────────────────────────────────────────── */
+    /* ─── Donut ──────────────────────────────────────────────────── */
     .donut-wrapper { display: flex; align-items: center; gap: var(--sp-xxl); }
     .donut-legend { display: flex; flex-direction: column; gap: var(--sp-sm); flex: 1; }
     .legend-item { display: flex; align-items: center; justify-content: space-between; }
@@ -466,10 +347,11 @@
     .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .legend-value { font-size: 13px; font-weight: 600; color: var(--ink); }
 
-    /* ─── Layout helpers ─────────────────────────────────────────────── */
+    /* ─── Grid helpers ───────────────────────────────────────────── */
     .grid-2-3 { display: grid; grid-template-columns: 1fr 340px; gap: var(--sp-md); align-items: start; }
+    .quick-actions-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--sp-sm); }
 
-    /* ─── Table ──────────────────────────────────────────────────────── */
+    /* ─── Table ──────────────────────────────────────────────────── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     thead th {
@@ -479,19 +361,17 @@
     }
     tbody tr { border-bottom: 1px solid var(--hairline-soft); }
     tbody tr:last-child { border-bottom: none; }
-    tbody td { padding: var(--sp-md); font-size: 14px; color: var(--ink); vertical-align: middle; }
+    tbody td { padding: var(--sp-md); font-size: 14px; vertical-align: middle; }
     .order-id { font-size: 13px; font-weight: 500; color: var(--charcoal); }
     .customer-cell { display: flex; align-items: center; gap: var(--sp-xs); }
-    .customer-avatar {
+    .cust-avatar {
       width: 28px; height: 28px; border-radius: var(--r-full);
       background: var(--surface); border: 1px solid var(--hairline);
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 600; color: var(--steel); flex-shrink: 0;
     }
-    .customer-name { font-size: 14px; font-weight: 500; color: var(--ink); }
-    .customer-email { font-size: 12px; color: var(--stone); }
-
-    /* Status badges */
+    .cust-name { font-size: 14px; font-weight: 500; }
+    .cust-email { font-size: 12px; color: var(--stone); }
     .status-badge {
       display: inline-flex; align-items: center; gap: 5px;
       border-radius: var(--r-full); padding: 3px 10px;
@@ -500,243 +380,136 @@
     .status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
     .status-badge.complete  { background: rgba(0,212,164,0.1);  color: var(--brand-green-deep); }
     .status-badge.complete::before  { background: var(--brand-green-deep); }
-    .status-badge.pending   { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
-    .status-badge.pending::before   { background: var(--brand-warn); }
     .status-badge.shipping  { background: rgba(55,114,207,0.1); color: var(--brand-tag); }
     .status-badge.shipping::before  { background: var(--brand-tag); }
+    .status-badge.pending   { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
+    .status-badge.pending::before   { background: var(--brand-warn); }
     .status-badge.cancelled { background: rgba(212,86,86,0.08); color: var(--brand-error); }
     .status-badge.cancelled::before { background: var(--brand-error); }
     .status-badge.refund    { background: rgba(88,88,92,0.08);  color: var(--slate); }
     .status-badge.refund::before    { background: var(--slate); }
 
-    /* ─── Top Products ───────────────────────────────────────────────── */
-    .product-item {
-      display: flex; align-items: center; gap: var(--sp-md);
-      padding: var(--sp-md) 0; border-bottom: 1px solid var(--hairline-soft);
-    }
+    /* ─── Top Products ───────────────────────────────────────────── */
+    .product-item { display: flex; align-items: center; gap: var(--sp-md); padding: var(--sp-md) 0; border-bottom: 1px solid var(--hairline-soft); }
     .product-item:last-child { border-bottom: none; }
     .product-rank { width: 20px; font-size: 13px; font-weight: 600; color: var(--muted); text-align: center; flex-shrink: 0; }
-    .product-thumb {
-      width: 40px; height: 40px; border-radius: var(--r-md);
-      border: 1px solid var(--hairline); background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
-    }
+    .product-thumb { width: 40px; height: 40px; border-radius: var(--r-md); border: 1px solid var(--hairline); background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
     .product-info { flex: 1; min-width: 0; }
-    .product-name { font-size: 14px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .product-category { font-size: 12px; color: var(--stone); margin-top: 1px; }
+    .product-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-cat  { font-size: 12px; color: var(--stone); margin-top: 1px; }
     .product-stats { text-align: right; flex-shrink: 0; }
-    .product-revenue { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .product-revenue { font-size: 14px; font-weight: 600; }
     .product-units { font-size: 12px; color: var(--stone); margin-top: 1px; }
     .progress-bar-wrap { width: 72px; height: 4px; background: var(--hairline); border-radius: var(--r-full); overflow: hidden; margin-top: 5px; margin-left: auto; }
     .progress-bar-fill { height: 100%; background: var(--brand-green); border-radius: var(--r-full); }
 
-    /* ─── Quick Actions ──────────────────────────────────────────────── */
-    .quick-actions-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--sp-sm); }
-    .quick-action-card {
-      background: var(--canvas); border: 1px solid var(--hairline);
-      border-radius: var(--r-lg); padding: var(--sp-xl);
-      display: flex; flex-direction: column; gap: var(--sp-xs);
-      cursor: pointer;
-    }
+    /* ─── Quick Action Cards ─────────────────────────────────────── */
+    .qa-card { background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-lg); padding: var(--sp-xl); display: flex; flex-direction: column; gap: var(--sp-xs); cursor: pointer; }
     .qa-icon { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; margin-bottom: var(--sp-xxs); }
     .qa-icon.green { background: rgba(0,212,164,0.1); color: var(--brand-green-deep); }
     .qa-icon.blue  { background: rgba(55,114,207,0.1); color: var(--brand-tag); }
     .qa-icon.warn  { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
     .qa-icon.slate { background: var(--surface); color: var(--slate); }
-    .qa-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .qa-title { font-size: 14px; font-weight: 600; }
     .qa-desc  { font-size: 13px; color: var(--stone); }
 
-    /* ─── Onboarding Overlay ─────────────────────────────────────────── */
+    /* ─── Onboarding Overlay ─────────────────────────────────────── */
     .overlay-backdrop {
       position: fixed; inset: 0;
-      background: rgba(10,10,10,0.55);
-      backdrop-filter: blur(4px);
-      z-index: 500;
-      display: flex; align-items: center; justify-content: center;
-      padding: var(--sp-xxl);
+      background: rgba(10,10,10,0.5); backdrop-filter: blur(4px);
+      z-index: 500; display: flex; align-items: center; justify-content: center; padding: var(--sp-xxl);
     }
     .onboarding-modal {
-      background: var(--canvas);
-      border-radius: var(--r-xl);
+      background: var(--canvas); border-radius: 20px;
       box-shadow: rgba(0,0,0,0.18) 0 24px 64px -12px;
-      width: 100%; max-width: 560px;
-      overflow: hidden;
+      width: 100%; max-width: 540px; overflow: hidden;
     }
-
-    /* Steps indicator */
-    .ob-steps {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0;
-      padding: var(--sp-xl) var(--sp-xxl) 0;
-    }
-    .ob-step-dot {
+    .ob-steps { display: flex; align-items: center; justify-content: center; padding: var(--sp-xl) var(--sp-xxl) 0; }
+    .ob-dot {
       width: 28px; height: 28px; border-radius: var(--r-full);
       border: 2px solid var(--hairline);
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 600; color: var(--muted);
-      background: var(--canvas);
-      flex-shrink: 0; position: relative; z-index: 1;
+      background: var(--canvas); flex-shrink: 0; position: relative; z-index: 1;
     }
-    .ob-step-dot.active { border-color: var(--brand-green); color: var(--brand-green-deep); background: rgba(0,212,164,0.06); }
-    .ob-step-dot.done   { border-color: var(--brand-green); background: var(--brand-green); color: var(--primary); }
-    .ob-step-line { flex: 1; height: 2px; background: var(--hairline); margin: 0 -1px; }
-    .ob-step-line.done { background: var(--brand-green); }
-
-    /* Step labels */
-    .ob-step-labels {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      padding: var(--sp-xs) var(--sp-xl) 0;
-      text-align: center;
-    }
-    .ob-step-labels span { font-size: 11px; color: var(--muted); }
-    .ob-step-labels span.active { color: var(--brand-green-deep); font-weight: 500; }
-    .ob-step-labels span.done   { color: var(--stone); }
-
-    /* Step content pane */
+    .ob-dot.active { border-color: var(--brand-green); color: var(--brand-green-deep); background: rgba(0,212,164,0.06); }
+    .ob-dot.done   { border-color: var(--brand-green); background: var(--brand-green); color: var(--primary); font-size: 11px; }
+    .ob-line { flex: 1; height: 2px; background: var(--hairline); margin: 0 -1px; }
+    .ob-line.done { background: var(--brand-green); }
+    .ob-labels { display: grid; grid-template-columns: repeat(3,1fr); padding: var(--sp-xs) var(--sp-xl) 0; text-align: center; }
+    .ob-labels span { font-size: 11px; color: var(--muted); }
+    .ob-labels span.active { color: var(--brand-green-deep); font-weight: 500; }
+    .ob-labels span.done   { color: var(--stone); }
     .ob-content { padding: var(--sp-xxl); }
-    .ob-step-pane { display: none; }
-    .ob-step-pane.active { display: block; }
-
+    .ob-pane { display: none; }
+    .ob-pane.active { display: block; }
     .ob-emoji { font-size: 40px; margin-bottom: var(--sp-md); line-height: 1; }
-    .ob-title {
-      font-size: 22px; font-weight: 700;
-      letter-spacing: -0.5px; color: var(--ink);
-      margin-bottom: var(--sp-xs);
-    }
-    .ob-desc { font-size: 14px; color: var(--steel); line-height: 1.6; margin-bottom: var(--sp-xxl); }
-
-    /* Feature list in step 1 */
+    .ob-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: var(--sp-xs); }
+    .ob-desc  { font-size: 14px; color: var(--steel); line-height: 1.6; margin-bottom: var(--sp-xxl); }
     .ob-feature-list { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-xxl); }
-    .ob-feature-item {
+    .ob-feat {
       display: flex; align-items: center; gap: var(--sp-md);
-      padding: var(--sp-md);
-      border: 1px solid var(--hairline-soft);
-      border-radius: var(--r-md);
-      background: var(--surface-soft);
+      padding: var(--sp-md); border: 1px solid var(--hairline-soft);
+      border-radius: var(--r-md); background: var(--surface-soft);
     }
-    .ob-feature-icon {
+    .ob-feat-icon {
       width: 36px; height: 36px; border-radius: var(--r-md);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .ob-feature-icon.g { background: rgba(0,212,164,0.1); color: var(--brand-green-deep); }
-    .ob-feature-icon.b { background: rgba(55,114,207,0.1); color: var(--brand-tag); }
-    .ob-feature-icon.o { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
-    .ob-feature-label { font-size: 14px; font-weight: 500; color: var(--ink); }
-    .ob-feature-desc  { font-size: 13px; color: var(--stone); }
-
-    /* Form fields in step 2 */
+    .ob-feat-icon.g { background: rgba(0,212,164,0.1); color: var(--brand-green-deep); }
+    .ob-feat-icon.b { background: rgba(55,114,207,0.1); color: var(--brand-tag); }
+    .ob-feat-icon.o { background: rgba(195,125,13,0.1); color: var(--brand-warn); }
+    .ob-feat-label { font-size: 14px; font-weight: 500; }
+    .ob-feat-desc  { font-size: 13px; color: var(--stone); }
     .ob-form { display: flex; flex-direction: column; gap: var(--sp-md); margin-bottom: var(--sp-xxl); }
     .ob-field { display: flex; flex-direction: column; gap: var(--sp-xxs); }
     .ob-field label { font-size: 13px; font-weight: 500; color: var(--charcoal); }
     .ob-field input, .ob-field select {
-      height: 40px;
-      background: var(--canvas);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-md);
-      padding: 0 var(--sp-md);
-      font-size: 14px; font-family: inherit;
-      color: var(--ink);
-      outline: none;
+      height: 40px; background: var(--canvas); border: 1px solid var(--hairline);
+      border-radius: var(--r-md); padding: 0 var(--sp-md); font-size: 14px; font-family: inherit; outline: none;
     }
     .ob-field input:focus, .ob-field select:focus { border-color: var(--brand-green); border-width: 2px; }
     .ob-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-md); }
-
-    /* Step 3 - type cards */
-    .ob-type-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--sp-sm); margin-bottom: var(--sp-xxl); }
-    .ob-type-card {
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-md);
-      padding: var(--sp-md);
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 150ms;
-    }
-    .ob-type-card.selected { border-color: var(--brand-green); border-width: 2px; background: rgba(0,212,164,0.03); }
-    .ob-type-card .ob-type-icon { font-size: 24px; margin-bottom: 6px; }
-    .ob-type-card .ob-type-name { font-size: 13px; font-weight: 600; color: var(--ink); }
-    .ob-type-card .ob-type-desc { font-size: 12px; color: var(--stone); margin-top: 2px; }
-
-    /* Onboarding footer */
-    .ob-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: var(--sp-lg) var(--sp-xxl) var(--sp-xxl);
-    }
+    .ob-checklist { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-xxl); }
+    .ob-check { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm); border-radius: var(--r-md); background: rgba(0,212,164,0.04); border: 1px solid rgba(0,212,164,0.15); font-size: 14px; }
+    .ob-check svg { color: var(--brand-green-deep); flex-shrink: 0; }
+    .ob-footer { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-lg) var(--sp-xxl) var(--sp-xxl); }
     .ob-skip { font-size: 13px; color: var(--stone); cursor: pointer; }
-    .ob-skip:hover { color: var(--steel); }
     .ob-actions { display: flex; align-items: center; gap: var(--sp-xs); }
 
-    /* Completion checklist */
-    .ob-checklist { display: flex; flex-direction: column; gap: var(--sp-sm); margin-bottom: var(--sp-xxl); }
-    .ob-check-item {
-      display: flex; align-items: center; gap: var(--sp-sm);
-      padding: var(--sp-sm);
-      border-radius: var(--r-md);
-      background: rgba(0,212,164,0.04);
-      border: 1px solid rgba(0,212,164,0.15);
-      font-size: 14px; color: var(--ink);
-    }
-    .ob-check-item svg { color: var(--brand-green-deep); flex-shrink: 0; }
-
-    /* ─── Sitemap Overlay ────────────────────────────────────────────── */
-    .sitemap-overlay {
-      position: fixed; inset: 0;
-      background: var(--canvas);
-      z-index: 600;
-      overflow-y: auto;
-      display: none;
-    }
+    /* ─── Sitemap Overlay ────────────────────────────────────────── */
+    .sitemap-overlay { position: fixed; inset: 0; background: var(--canvas); z-index: 600; overflow-y: auto; display: none; }
     .sitemap-overlay.open { display: block; }
     .sitemap-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: var(--sp-xl) var(--sp-xxl);
-      border-bottom: 1px solid var(--hairline);
-      position: sticky; top: 0;
-      background: var(--canvas);
-      z-index: 1;
+      padding: var(--sp-xl) var(--sp-xxl); border-bottom: 1px solid var(--hairline);
+      position: sticky; top: 0; background: var(--canvas); z-index: 1;
     }
-    .sitemap-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: var(--ink); }
+    .sitemap-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
     .sitemap-close {
       display: flex; align-items: center; gap: 6px;
       font-size: 14px; font-weight: 500; color: var(--steel);
-      padding: 8px 14px; border-radius: var(--r-full);
-      border: 1px solid var(--hairline); cursor: pointer;
+      padding: 8px 14px; border-radius: var(--r-full); border: 1px solid var(--hairline); cursor: pointer;
     }
     .sitemap-body { padding: var(--sp-xxl); }
-    .sitemap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-xxl); }
+    .sitemap-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: var(--sp-xxl); }
     .sitemap-section-title {
-      font-size: 13px; font-weight: 700;
-      letter-spacing: -0.2px; color: var(--ink);
-      padding-bottom: var(--sp-xs);
-      border-bottom: 2px solid var(--ink);
-      margin-bottom: var(--sp-sm);
+      font-size: 13px; font-weight: 700; letter-spacing: -0.2px;
+      padding-bottom: var(--sp-xs); border-bottom: 2px solid var(--ink); margin-bottom: var(--sp-sm);
     }
-    .sitemap-link {
-      display: block;
-      font-size: 13px; color: var(--steel);
-      padding: 4px 0;
-      cursor: pointer;
-    }
+    .sitemap-2depth { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 8px 0 2px; }
+    .sitemap-link { display: block; font-size: 13px; color: var(--steel); padding: 3px 0; cursor: pointer; }
     .sitemap-link:hover { color: var(--ink); }
-    .sitemap-util-row {
-      display: flex; flex-wrap: wrap; gap: var(--sp-sm);
-      padding-top: var(--sp-xxl);
-      border-top: 1px solid var(--hairline);
-      margin-top: var(--sp-xxl);
-    }
+    .sitemap-util-row { display: flex; flex-wrap: wrap; gap: var(--sp-sm); padding-top: var(--sp-xxl); border-top: 1px solid var(--hairline); margin-top: var(--sp-xxl); }
     .sitemap-util-chip {
       display: flex; align-items: center; gap: 6px;
-      background: var(--surface);
-      border: 1px solid var(--hairline);
-      border-radius: var(--r-full);
-      padding: 7px 16px;
-      font-size: 13px; color: var(--steel);
-      cursor: pointer;
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: var(--r-full); padding: 7px 16px;
+      font-size: 13px; color: var(--steel); cursor: pointer;
     }
     .sitemap-util-chip:hover { background: var(--hairline); color: var(--ink); }
 
-    /* ─── Scrollbar ──────────────────────────────────────────────────── */
+    /* ─── Scrollbar ──────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
@@ -744,26 +517,21 @@
 </head>
 <body>
 
-<!-- ╔══════════════════════════════════════════════════════════════╗
-     ║  NOTIFICATION BANNER                                        ║
-     ╚══════════════════════════════════════════════════════════════╝ -->
+<!-- ── NOTIFICATION BANNER ──────────────────────────────────────── -->
 <div class="notif-banner" id="notifBanner">
   <span class="notif-label">EVENT</span>
   5월 가정의 달 특별 기획전 — 배너 등록 시 상단 노출 혜택 제공 중
   <a href="#" class="notif-link">자세히 보기</a>
-  <button class="notif-close" onclick="document.getElementById('notifBanner').remove()" aria-label="닫기">
+  <button class="notif-close" onclick="this.closest('.notif-banner').remove()" aria-label="닫기">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════╗
-     ║  APP SHELL                                                  ║
-     ╚══════════════════════════════════════════════════════════════╝ -->
+<!-- ── APP SHELL ────────────────────────────────────────────────── -->
 <div class="app-shell">
 
-  <!-- ══ TOPBAR ══ -->
+  <!-- ╔══ TOPBAR ══╗ -->
   <header class="topbar">
-    <!-- Logo -->
     <div class="topbar-logo">
       <div class="logo-mark">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -773,7 +541,6 @@
       <span class="logo-text">ShopAdmin</span>
     </div>
 
-    <!-- Integrated Search -->
     <div class="search-wrap">
       <label for="globalSearch">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -785,84 +552,60 @@
 
     <div class="topbar-spacer"></div>
 
-    <div class="topbar-actions">
-      <!-- Sitemap -->
-      <button class="btn-topbar" onclick="openSitemap()" title="사이트맵">
+    <div style="display:flex;align-items:center;gap:var(--sp-xs);">
+      <button class="btn-topbar" onclick="openSitemap()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         사이트맵
       </button>
-
       <div class="topbar-divider"></div>
-
-      <!-- Logout -->
-      <button class="btn-logout btn-ghost" onclick="handleLogout()">
+      <button class="btn-topbar" onclick="handleLogout()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         로그아웃
       </button>
-
       <div class="topbar-divider"></div>
-
-      <!-- Account -->
       <div style="display:flex;align-items:center;gap:7px;cursor:pointer;">
         <div class="avatar">소</div>
         <div style="line-height:1.3;">
-          <div style="font-size:13px;font-weight:600;color:var(--ink);">소연 스토어</div>
+          <div style="font-size:13px;font-weight:600;">소연 스토어</div>
           <div style="font-size:11px;color:var(--stone);">Pro 플랜</div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ══ 1DEPTH NAV ══ -->
-  <nav class="nav-1depth" id="nav1depth">
-    <button class="nav1-item active" data-key="상품관리"   onclick="switchMenu(this,'상품관리')">상품관리</button>
-    <button class="nav1-item"        data-key="주문관리"   onclick="switchMenu(this,'주문관리')">주문관리</button>
-    <button class="nav1-item"        data-key="회원관리"   onclick="switchMenu(this,'회원관리')">회원관리</button>
-    <button class="nav1-item"        data-key="발주관리"   onclick="switchMenu(this,'발주관리')">발주관리</button>
-    <button class="nav1-item"        data-key="SMS관리"    onclick="switchMenu(this,'SMS관리')">SMS관리</button>
-    <button class="nav1-item"        data-key="매출정산"   onclick="switchMenu(this,'매출정산')">매출정산</button>
-    <button class="nav1-item"        data-key="링크셀러"   onclick="switchMenu(this,'링크셀러')">링크셀러</button>
-    <button class="nav1-item"        data-key="제휴서비스" onclick="switchMenu(this,'제휴서비스')">제휴서비스</button>
-    <button class="nav1-item"        data-key="바로앱"     onclick="switchMenu(this,'바로앱')">바로앱</button>
-    <button class="nav1-item"        data-key="셀럽션"     onclick="switchMenu(this,'셀럽션')">셀럽션</button>
-  </nav>
-
-  <!-- ══ SIDEBAR (2DEPTH + UTILITY) ══ -->
+  <!-- ╔══ SIDEBAR (accordion) ══╗ -->
   <aside class="sidebar">
     <nav class="sidebar-nav" id="sidebarNav">
       <!-- Rendered by JS -->
     </nav>
-
-    <!-- Utility Links -->
     <div class="sidebar-util">
       <div class="sidebar-util-header">바로가기</div>
       <a href="#" class="util-item">
         <span>환경설정</span>
-        <svg class="external-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41"/></svg>
+        <svg class="ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
       </a>
       <a href="#" class="util-item">
         <span>채널계정관리</span>
-        <svg class="external-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <svg class="ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
-      <a href="#" class="util-item" target="_blank" rel="noopener">
+      <a href="#" class="util-item" target="_blank">
         <span>판매자샵 바로가기</span>
-        <svg class="external-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <svg class="ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
-      <a href="#" class="util-item" target="_blank" rel="noopener">
+      <a href="#" class="util-item" target="_blank">
         <span>주문배송조회</span>
-        <svg class="external-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <svg class="ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
       <a href="#" class="util-item">
         <span>무이자카드할부안내</span>
-        <svg class="external-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <svg class="ext-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </a>
     </div>
   </aside>
 
-  <!-- ══ MAIN CONTENT ══ -->
+  <!-- ╔══ MAIN ══╗ -->
   <main class="main">
 
-    <!-- Page Header -->
     <div class="page-header">
       <div>
         <h1>오늘의 현황</h1>
@@ -880,62 +623,41 @@
       </div>
     </div>
 
-    <!-- Alert strip -->
     <div class="alert-strip">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       <span><strong>재고 부족:</strong> '아이보리 린넨 원피스 (M)' 재고가 3개 남았습니다.</span>
       <a href="#">재고 관리 →</a>
     </div>
 
-    <!-- KPI Cards -->
+    <!-- KPI -->
     <div class="kpi-grid">
       <div class="kpi-card featured">
-        <div class="kpi-label">오늘 매출
-          <div class="kpi-icon green">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-          </div>
-        </div>
+        <div class="kpi-label">오늘 매출 <div class="kpi-icon green"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div>
         <div class="kpi-value">₩4,821,000</div>
         <div class="kpi-meta"><span class="delta up">↑ 12.4%</span><span class="kpi-compare">어제 대비</span></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">신규 주문
-          <div class="kpi-icon blue">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          </div>
-        </div>
+        <div class="kpi-label">신규 주문 <div class="kpi-icon blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div></div>
         <div class="kpi-value">127</div>
         <div class="kpi-meta"><span class="delta up">↑ 8.1%</span><span class="kpi-compare">어제 대비</span></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">방문자
-          <div class="kpi-icon warn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          </div>
-        </div>
+        <div class="kpi-label">방문자 <div class="kpi-icon warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
         <div class="kpi-value">3,408</div>
         <div class="kpi-meta"><span class="delta down">↓ 3.2%</span><span class="kpi-compare">어제 대비</span></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">전환율
-          <div class="kpi-icon red">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-        </div>
+        <div class="kpi-label">전환율 <div class="kpi-icon red"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div></div>
         <div class="kpi-value">3.73%</div>
         <div class="kpi-meta"><span class="delta up">↑ 0.4%p</span><span class="kpi-compare">어제 대비</span></div>
       </div>
     </div>
 
-    <!-- Charts Row -->
+    <!-- Charts -->
     <div class="grid-2-3">
-      <!-- Sales Trend -->
       <div class="card">
         <div class="card-header">
-          <div>
-            <div class="card-title">매출 추이</div>
-            <div class="card-subtitle">최근 7일 일별 매출</div>
-          </div>
+          <div><div class="card-title">매출 추이</div><div class="card-subtitle">최근 7일 일별 매출</div></div>
           <div class="pill-tabs">
             <button class="pill-tab active">7일</button>
             <button class="pill-tab">30일</button>
@@ -943,9 +665,7 @@
           </div>
         </div>
         <div class="chart-wrapper">
-          <div class="chart-y-labels">
-            <span>600만</span><span>450만</span><span>300만</span><span>150만</span><span>0</span>
-          </div>
+          <div class="chart-y-labels"><span>600만</span><span>450만</span><span>300만</span><span>150만</span><span>0</span></div>
           <div class="chart-area">
             <svg viewBox="0 0 560 200" preserveAspectRatio="none">
               <line x1="0" y1="0"   x2="560" y2="0"   stroke="#ededed" stroke-width="1"/>
@@ -953,53 +673,31 @@
               <line x1="0" y1="100" x2="560" y2="100" stroke="#ededed" stroke-width="1"/>
               <line x1="0" y1="150" x2="560" y2="150" stroke="#ededed" stroke-width="1"/>
               <line x1="0" y1="200" x2="560" y2="200" stroke="#ededed" stroke-width="1"/>
-              <defs>
-                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stop-color="#00d4a4" stop-opacity="0.15"/>
-                  <stop offset="100%" stop-color="#00d4a4" stop-opacity="0.01"/>
-                </linearGradient>
-              </defs>
-              <path d="M0,160 L80,130 L160,145 L240,80 L320,60 L400,100 L480,40 L560,50 L560,200 L0,200 Z" fill="url(#areaGrad)"/>
-              <polyline points="0,160 80,130 160,145 240,80 320,60 400,100 480,40 560,50"
-                fill="none" stroke="#00d4a4" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-              <circle cx="0"   cy="160" r="3.5" fill="#00d4a4"/>
-              <circle cx="80"  cy="130" r="3.5" fill="#00d4a4"/>
-              <circle cx="160" cy="145" r="3.5" fill="#00d4a4"/>
-              <circle cx="240" cy="80"  r="3.5" fill="#00d4a4"/>
-              <circle cx="320" cy="60"  r="3.5" fill="#00d4a4"/>
-              <circle cx="400" cy="100" r="3.5" fill="#00d4a4"/>
-              <circle cx="480" cy="40"  r="3.5" fill="#00d4a4"/>
-              <circle cx="480" cy="40"  r="6"   fill="none" stroke="#00d4a4" stroke-width="2"/>
+              <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4a4" stop-opacity="0.15"/><stop offset="100%" stop-color="#00d4a4" stop-opacity="0.01"/></linearGradient></defs>
+              <path d="M0,160 L80,130 L160,145 L240,80 L320,60 L400,100 L480,40 L560,50 L560,200 L0,200 Z" fill="url(#g)"/>
+              <polyline points="0,160 80,130 160,145 240,80 320,60 400,100 480,40 560,50" fill="none" stroke="#00d4a4" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+              <circle cx="480" cy="40" r="3.5" fill="#00d4a4"/>
+              <circle cx="480" cy="40" r="6" fill="none" stroke="#00d4a4" stroke-width="2"/>
+              <circle cx="0" cy="160" r="3" fill="#00d4a4"/><circle cx="80" cy="130" r="3" fill="#00d4a4"/>
+              <circle cx="160" cy="145" r="3" fill="#00d4a4"/><circle cx="240" cy="80" r="3" fill="#00d4a4"/>
+              <circle cx="320" cy="60" r="3" fill="#00d4a4"/><circle cx="400" cy="100" r="3" fill="#00d4a4"/>
             </svg>
           </div>
         </div>
-        <div class="chart-x-labels">
-          <span>5/1</span><span>5/2</span><span>5/3</span><span>5/4</span>
-          <span>5/5</span><span>5/6</span><span>5/7</span>
-        </div>
+        <div class="chart-x-labels"><span>5/1</span><span>5/2</span><span>5/3</span><span>5/4</span><span>5/5</span><span>5/6</span><span>5/7</span></div>
       </div>
 
-      <!-- Donut -->
       <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">주문 현황</div>
-            <div class="card-subtitle">오늘 127건</div>
-          </div>
-        </div>
+        <div class="card-header"><div><div class="card-title">주문 현황</div><div class="card-subtitle">오늘 127건</div></div></div>
         <div class="donut-wrapper">
           <svg width="110" height="110" viewBox="0 0 110 110" style="flex-shrink:0;">
             <circle cx="55" cy="55" r="40" fill="none" stroke="#ededed" stroke-width="14"/>
-            <circle cx="55" cy="55" r="40" fill="none" stroke="#00b48a" stroke-width="14"
-              stroke-dasharray="145.7 105.5" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
-            <circle cx="55" cy="55" r="40" fill="none" stroke="#3772cf" stroke-width="14"
-              stroke-dasharray="55.3 195.9" stroke-dashoffset="-145.7" transform="rotate(-90 55 55)"/>
-            <circle cx="55" cy="55" r="40" fill="none" stroke="#c37d0d" stroke-width="14"
-              stroke-dasharray="30.1 221.1" stroke-dashoffset="-201" transform="rotate(-90 55 55)"/>
-            <circle cx="55" cy="55" r="40" fill="none" stroke="#d45656" stroke-width="14"
-              stroke-dasharray="20.1 231.1" stroke-dashoffset="-231.1" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#00b48a" stroke-width="14" stroke-dasharray="145.7 105.5" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#3772cf" stroke-width="14" stroke-dasharray="55.3 195.9" stroke-dashoffset="-145.7" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#c37d0d" stroke-width="14" stroke-dasharray="30.1 221.1" stroke-dashoffset="-201" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#d45656" stroke-width="14" stroke-dasharray="20.1 231.1" stroke-dashoffset="-231.1" transform="rotate(-90 55 55)"/>
             <text x="55" y="51" text-anchor="middle" font-size="16" font-weight="600" fill="#0a0a0a" font-family="Pretendard, sans-serif">127</text>
-            <text x="55" y="65" text-anchor="middle" font-size="10" fill="#888888" font-family="Pretendard, sans-serif">건</text>
+            <text x="55" y="65" text-anchor="middle" font-size="10" fill="#888" font-family="Pretendard, sans-serif">건</text>
           </svg>
           <div class="donut-legend">
             <div class="legend-item"><div class="legend-label"><div class="legend-dot" style="background:#00b48a"></div>배송완료</div><div class="legend-value">74건</div></div>
@@ -1011,7 +709,7 @@
       </div>
     </div>
 
-    <!-- Orders + Top Products -->
+    <!-- Orders + Products -->
     <div class="grid-2-3">
       <div class="card" style="padding:0;overflow:hidden;">
         <div class="card-header" style="padding:var(--sp-xl) var(--sp-xl) var(--sp-md);">
@@ -1020,15 +718,11 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>주문번호</th><th>고객</th><th>상품</th><th>금액</th><th>상태</th><th>주문시각</th>
-              </tr>
-            </thead>
+            <thead><tr><th>주문번호</th><th>고객</th><th>상품</th><th>금액</th><th>상태</th><th>시각</th></tr></thead>
             <tbody>
               <tr>
                 <td><span class="order-id">#ORD-2847</span></td>
-                <td><div class="customer-cell"><div class="customer-avatar">김</div><div><div class="customer-name">김지은</div><div class="customer-email">jieun@email.com</div></div></div></td>
+                <td><div class="customer-cell"><div class="cust-avatar">김</div><div><div class="cust-name">김지은</div><div class="cust-email">jieun@email.com</div></div></div></td>
                 <td style="color:var(--steel);font-size:13px;">플로럴 미디 스커트 외 2건</td>
                 <td style="font-size:13px;font-weight:500;">₩127,000</td>
                 <td><span class="status-badge complete">배송완료</span></td>
@@ -1036,7 +730,7 @@
               </tr>
               <tr>
                 <td><span class="order-id">#ORD-2846</span></td>
-                <td><div class="customer-cell"><div class="customer-avatar">박</div><div><div class="customer-name">박서연</div><div class="customer-email">sypark@email.com</div></div></div></td>
+                <td><div class="customer-cell"><div class="cust-avatar">박</div><div><div class="cust-name">박서연</div><div class="cust-email">sypark@email.com</div></div></div></td>
                 <td style="color:var(--steel);font-size:13px;">크롭 니트 가디건 (아이보리)</td>
                 <td style="font-size:13px;font-weight:500;">₩89,000</td>
                 <td><span class="status-badge shipping">배송중</span></td>
@@ -1044,7 +738,7 @@
               </tr>
               <tr>
                 <td><span class="order-id">#ORD-2845</span></td>
-                <td><div class="customer-cell"><div class="customer-avatar">이</div><div><div class="customer-name">이수민</div><div class="customer-email">sumin.l@email.com</div></div></div></td>
+                <td><div class="customer-cell"><div class="cust-avatar">이</div><div><div class="cust-name">이수민</div><div class="cust-email">sumin.l@email.com</div></div></div></td>
                 <td style="color:var(--steel);font-size:13px;">린넨 와이드 팬츠 외 1건</td>
                 <td style="font-size:13px;font-weight:500;">₩156,000</td>
                 <td><span class="status-badge pending">처리대기</span></td>
@@ -1052,7 +746,7 @@
               </tr>
               <tr>
                 <td><span class="order-id">#ORD-2844</span></td>
-                <td><div class="customer-cell"><div class="customer-avatar">최</div><div><div class="customer-name">최예린</div><div class="customer-email">yerin.c@email.com</div></div></div></td>
+                <td><div class="customer-cell"><div class="cust-avatar">최</div><div><div class="cust-name">최예린</div><div class="cust-email">yerin.c@email.com</div></div></div></td>
                 <td style="color:var(--steel);font-size:13px;">스트라이프 오버핏 셔츠</td>
                 <td style="font-size:13px;font-weight:500;">₩72,000</td>
                 <td><span class="status-badge complete">배송완료</span></td>
@@ -1060,7 +754,7 @@
               </tr>
               <tr>
                 <td><span class="order-id">#ORD-2843</span></td>
-                <td><div class="customer-cell"><div class="customer-avatar">정</div><div><div class="customer-name">정하은</div><div class="customer-email">haeun.j@email.com</div></div></div></td>
+                <td><div class="customer-cell"><div class="cust-avatar">정</div><div><div class="cust-name">정하은</div><div class="cust-email">haeun.j@email.com</div></div></div></td>
                 <td style="color:var(--steel);font-size:13px;">레이어드 슬립 드레스</td>
                 <td style="font-size:13px;font-weight:500;">₩108,000</td>
                 <td><span class="status-badge cancelled">취소</span></td>
@@ -1071,61 +765,24 @@
         </div>
       </div>
 
-      <!-- Top Products -->
       <div class="card">
-        <div class="card-header">
-          <div><div class="card-title">인기 상품 TOP 5</div><div class="card-subtitle">이번 달 누적 기준</div></div>
-        </div>
-        <div class="product-item">
-          <div class="product-rank">1</div><div class="product-thumb">👗</div>
-          <div class="product-info"><div class="product-name">아이보리 린넨 원피스</div><div class="product-category">원피스 · 드레스</div></div>
-          <div class="product-stats"><div class="product-revenue">₩6.2M</div><div class="product-units">68건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%"></div></div></div>
-        </div>
-        <div class="product-item">
-          <div class="product-rank">2</div><div class="product-thumb">👚</div>
-          <div class="product-info"><div class="product-name">크롭 니트 가디건</div><div class="product-category">니트 · 가디건</div></div>
-          <div class="product-stats"><div class="product-revenue">₩4.9M</div><div class="product-units">55건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:81%"></div></div></div>
-        </div>
-        <div class="product-item">
-          <div class="product-rank">3</div><div class="product-thumb">👖</div>
-          <div class="product-info"><div class="product-name">린넨 와이드 팬츠</div><div class="product-category">바지 · 팬츠</div></div>
-          <div class="product-stats"><div class="product-revenue">₩3.7M</div><div class="product-units">47건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:69%"></div></div></div>
-        </div>
-        <div class="product-item">
-          <div class="product-rank">4</div><div class="product-thumb">🎀</div>
-          <div class="product-info"><div class="product-name">플로럴 미디 스커트</div><div class="product-category">스커트</div></div>
-          <div class="product-stats"><div class="product-revenue">₩2.8M</div><div class="product-units">36건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:53%"></div></div></div>
-        </div>
-        <div class="product-item">
-          <div class="product-rank">5</div><div class="product-thumb">🧥</div>
-          <div class="product-info"><div class="product-name">오버핏 스트라이프 셔츠</div><div class="product-category">셔츠 · 블라우스</div></div>
-          <div class="product-stats"><div class="product-revenue">₩1.9M</div><div class="product-units">26건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:38%"></div></div></div>
-        </div>
+        <div class="card-header"><div><div class="card-title">인기 상품 TOP 5</div><div class="card-subtitle">이번 달 누적 기준</div></div></div>
+        <div class="product-item"><div class="product-rank">1</div><div class="product-thumb">👗</div><div class="product-info"><div class="product-name">아이보리 린넨 원피스</div><div class="product-cat">원피스 · 드레스</div></div><div class="product-stats"><div class="product-revenue">₩6.2M</div><div class="product-units">68건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%"></div></div></div></div>
+        <div class="product-item"><div class="product-rank">2</div><div class="product-thumb">👚</div><div class="product-info"><div class="product-name">크롭 니트 가디건</div><div class="product-cat">니트 · 가디건</div></div><div class="product-stats"><div class="product-revenue">₩4.9M</div><div class="product-units">55건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:81%"></div></div></div></div>
+        <div class="product-item"><div class="product-rank">3</div><div class="product-thumb">👖</div><div class="product-info"><div class="product-name">린넨 와이드 팬츠</div><div class="product-cat">바지 · 팬츠</div></div><div class="product-stats"><div class="product-revenue">₩3.7M</div><div class="product-units">47건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:69%"></div></div></div></div>
+        <div class="product-item"><div class="product-rank">4</div><div class="product-thumb">🎀</div><div class="product-info"><div class="product-name">플로럴 미디 스커트</div><div class="product-cat">스커트</div></div><div class="product-stats"><div class="product-revenue">₩2.8M</div><div class="product-units">36건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:53%"></div></div></div></div>
+        <div class="product-item"><div class="product-rank">5</div><div class="product-thumb">🧥</div><div class="product-info"><div class="product-name">오버핏 스트라이프 셔츠</div><div class="product-cat">셔츠 · 블라우스</div></div><div class="product-stats"><div class="product-revenue">₩1.9M</div><div class="product-units">26건</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:38%"></div></div></div></div>
       </div>
     </div>
 
     <!-- Quick Actions -->
     <div class="card" style="padding:var(--sp-xl);">
-      <div class="card-header" style="margin-bottom:var(--sp-md);">
-        <div class="card-title">빠른 실행</div>
-      </div>
+      <div class="card-header" style="margin-bottom:var(--sp-md);"><div class="card-title">빠른 실행</div></div>
       <div class="quick-actions-grid">
-        <div class="quick-action-card">
-          <div class="qa-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-          <div class="qa-title">상품 등록</div><div class="qa-desc">새 상품을 빠르게 추가</div>
-        </div>
-        <div class="quick-action-card">
-          <div class="qa-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div>
-          <div class="qa-title">주문 처리</div><div class="qa-desc">대기 중인 주문 23건</div>
-        </div>
-        <div class="quick-action-card">
-          <div class="qa-icon warn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-          <div class="qa-title">쿠폰 발급</div><div class="qa-desc">할인 쿠폰 즉시 생성</div>
-        </div>
-        <div class="quick-action-card">
-          <div class="qa-icon slate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-          <div class="qa-title">리포트 출력</div><div class="qa-desc">월간 성과 보고서</div>
-        </div>
+        <div class="qa-card"><div class="qa-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="qa-title">상품 등록</div><div class="qa-desc">새 상품을 빠르게 추가</div></div>
+        <div class="qa-card"><div class="qa-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div><div class="qa-title">주문 처리</div><div class="qa-desc">대기 중인 주문 23건</div></div>
+        <div class="qa-card"><div class="qa-icon warn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="qa-title">쿠폰 발급</div><div class="qa-desc">할인 쿠폰 즉시 생성</div></div>
+        <div class="qa-card"><div class="qa-icon slate"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="qa-title">리포트 출력</div><div class="qa-desc">월간 성과 보고서</div></div>
       </div>
     </div>
 
@@ -1133,156 +790,85 @@
 </div><!-- /app-shell -->
 
 
-<!-- ╔══════════════════════════════════════════════════════════════╗
-     ║  ONBOARDING OVERLAY                                         ║
-     ╚══════════════════════════════════════════════════════════════╝ -->
+<!-- ── ONBOARDING OVERLAY ─────────────────────────────────────────── -->
 <div class="overlay-backdrop" id="onboardingOverlay">
   <div class="onboarding-modal">
-
-    <!-- Step indicator -->
-    <div class="ob-steps" id="obSteps">
-      <div class="ob-step-dot active" id="dot1">1</div>
-      <div class="ob-step-line" id="line1"></div>
-      <div class="ob-step-dot" id="dot2">2</div>
-      <div class="ob-step-line" id="line2"></div>
-      <div class="ob-step-dot" id="dot3">3</div>
+    <div class="ob-steps">
+      <div class="ob-dot active" id="dot1">1</div>
+      <div class="ob-line" id="line1"></div>
+      <div class="ob-dot" id="dot2">2</div>
+      <div class="ob-line" id="line2"></div>
+      <div class="ob-dot" id="dot3">3</div>
     </div>
-    <div class="ob-step-labels">
+    <div class="ob-labels">
       <span class="active" id="lbl1">환영합니다</span>
       <span id="lbl2">쇼핑몰 정보</span>
       <span id="lbl3">시작하기</span>
     </div>
-
     <div class="ob-content">
-
-      <!-- Step 1: Welcome -->
-      <div class="ob-step-pane active" id="obPane1">
+      <!-- Step 1 -->
+      <div class="ob-pane active" id="obPane1">
         <div class="ob-emoji">👋</div>
         <div class="ob-title">소연 스토어에 오신 걸<br>환영합니다!</div>
         <div class="ob-desc">ShopAdmin으로 쇼핑몰 운영을 시작해보세요.<br>몇 가지 기본 설정만 완료하면 바로 판매를 시작할 수 있습니다.</div>
         <div class="ob-feature-list">
-          <div class="ob-feature-item">
-            <div class="ob-feature-icon g">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            </div>
-            <div>
-              <div class="ob-feature-label">상품 등록부터 정산까지</div>
-              <div class="ob-feature-desc">상품관리, 주문처리, 매출정산을 한 곳에서</div>
-            </div>
-          </div>
-          <div class="ob-feature-item">
-            <div class="ob-feature-icon b">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            </div>
-            <div>
-              <div class="ob-feature-label">고객 관리와 마케팅</div>
-              <div class="ob-feature-desc">회원 등급, 쿠폰, SMS 발송까지 통합 관리</div>
-            </div>
-          </div>
-          <div class="ob-feature-item">
-            <div class="ob-feature-icon o">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div>
-              <div class="ob-feature-label">실시간 매출 현황 확인</div>
-              <div class="ob-feature-desc">대시보드에서 오늘의 매출과 주문 현황을 한눈에</div>
-            </div>
-          </div>
+          <div class="ob-feat"><div class="ob-feat-icon g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div><div><div class="ob-feat-label">상품 등록부터 정산까지</div><div class="ob-feat-desc">상품관리, 주문처리, 매출정산을 한 곳에서</div></div></div>
+          <div class="ob-feat"><div class="ob-feat-icon b"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="ob-feat-label">고객 관리와 마케팅</div><div class="ob-feat-desc">회원 등급, 쿠폰, SMS 발송까지 통합 관리</div></div></div>
+          <div class="ob-feat"><div class="ob-feat-icon o"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="ob-feat-label">실시간 매출 현황 확인</div><div class="ob-feat-desc">대시보드에서 오늘의 매출과 주문 현황을 한눈에</div></div></div>
         </div>
       </div>
-
-      <!-- Step 2: Store Info -->
-      <div class="ob-step-pane" id="obPane2">
+      <!-- Step 2 -->
+      <div class="ob-pane" id="obPane2">
         <div class="ob-emoji">🏪</div>
         <div class="ob-title">쇼핑몰 기본 정보를<br>입력해주세요</div>
-        <div class="ob-desc">아래 정보는 나중에 환경설정에서 언제든지 수정할 수 있습니다.</div>
+        <div class="ob-desc">아래 정보는 환경설정에서 언제든지 수정할 수 있습니다.</div>
         <div class="ob-form">
           <div class="ob-field-row">
-            <div class="ob-field">
-              <label>쇼핑몰 이름 <span style="color:var(--brand-error)">*</span></label>
-              <input type="text" value="소연 스토어" placeholder="쇼핑몰 이름을 입력하세요" />
-            </div>
-            <div class="ob-field">
-              <label>대표자명 <span style="color:var(--brand-error)">*</span></label>
-              <input type="text" placeholder="대표자명을 입력하세요" />
-            </div>
+            <div class="ob-field"><label>쇼핑몰 이름 <span style="color:var(--brand-error)">*</span></label><input type="text" value="소연 스토어" /></div>
+            <div class="ob-field"><label>대표자명 <span style="color:var(--brand-error)">*</span></label><input type="text" placeholder="대표자명" /></div>
           </div>
-          <div class="ob-field">
-            <label>사업자 등록번호</label>
-            <input type="text" placeholder="000-00-00000" />
-          </div>
+          <div class="ob-field"><label>사업자 등록번호</label><input type="text" placeholder="000-00-00000" /></div>
           <div class="ob-field-row">
-            <div class="ob-field">
-              <label>업종</label>
-              <select>
-                <option>의류·패션</option>
-                <option>식품</option>
-                <option>뷰티·화장품</option>
-                <option>디지털·가전</option>
-                <option>기타</option>
-              </select>
-            </div>
-            <div class="ob-field">
-              <label>고객센터 전화번호</label>
-              <input type="tel" placeholder="02-0000-0000" />
-            </div>
+            <div class="ob-field"><label>업종</label><select><option>의류·패션</option><option>식품</option><option>뷰티·화장품</option><option>디지털·가전</option><option>기타</option></select></div>
+            <div class="ob-field"><label>고객센터 전화번호</label><input type="tel" placeholder="02-0000-0000" /></div>
           </div>
         </div>
       </div>
-
-      <!-- Step 3: Done -->
-      <div class="ob-step-pane" id="obPane3">
+      <!-- Step 3 -->
+      <div class="ob-pane" id="obPane3">
         <div class="ob-emoji">✅</div>
         <div class="ob-title">모든 설정이<br>완료되었습니다!</div>
-        <div class="ob-desc">이제 ShopAdmin을 자유롭게 이용할 수 있습니다.<br>지금 바로 첫 번째 상품을 등록해보세요.</div>
+        <div class="ob-desc">이제 ShopAdmin을 자유롭게 이용할 수 있습니다.<br>왼쪽 메뉴에서 원하는 기능을 바로 사용해보세요.</div>
         <div class="ob-checklist">
-          <div class="ob-check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            계정 생성 완료
-          </div>
-          <div class="ob-check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            쇼핑몰 기본 정보 입력 완료
-          </div>
-          <div class="ob-check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Pro 플랜 활성화됨
-          </div>
+          <div class="ob-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>계정 생성 완료</div>
+          <div class="ob-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>쇼핑몰 기본 정보 입력 완료</div>
+          <div class="ob-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Pro 플랜 활성화됨</div>
         </div>
       </div>
-
-    </div><!-- /ob-content -->
-
-    <!-- Footer -->
+    </div>
     <div class="ob-footer">
       <span class="ob-skip" id="obSkip" onclick="closeOnboarding()">나중에 설정하기</span>
       <div class="ob-actions">
-        <button class="btn-secondary" id="obPrev" onclick="obPrevStep()" style="display:none;">이전</button>
-        <button class="btn-accent" id="obNext" onclick="obNextStep()">시작하기 →</button>
+        <button class="btn-secondary" id="obPrev" onclick="obPrev()" style="display:none;">이전</button>
+        <button class="btn-accent" id="obNext" onclick="obNext()">시작하기 →</button>
       </div>
     </div>
+  </div>
+</div>
 
-  </div><!-- /onboarding-modal -->
-</div><!-- /onboarding-overlay -->
 
-
-<!-- ╔══════════════════════════════════════════════════════════════╗
-     ║  SITEMAP OVERLAY                                            ║
-     ╚══════════════════════════════════════════════════════════════╝ -->
+<!-- ── SITEMAP OVERLAY ────────────────────────────────────────────── -->
 <div class="sitemap-overlay" id="sitemapOverlay">
   <div class="sitemap-header">
     <div class="sitemap-title">사이트맵</div>
     <button class="sitemap-close" onclick="closeSitemap()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      닫기
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>닫기
     </button>
   </div>
   <div class="sitemap-body">
-    <div class="sitemap-grid" id="sitemapGrid">
-      <!-- Rendered by JS -->
-    </div>
+    <div class="sitemap-grid" id="sitemapGrid"></div>
     <div class="sitemap-util-row">
-      <div class="sitemap-util-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>환경설정</div>
+      <div class="sitemap-util-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>환경설정</div>
       <div class="sitemap-util-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>채널계정관리</div>
       <div class="sitemap-util-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>판매자샵 바로가기 ↗</div>
       <div class="sitemap-util-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>주문배송조회 ↗</div>
@@ -1292,172 +878,222 @@
 </div>
 
 
-<!-- ╔══════════════════════════════════════════════════════════════╗
-     ║  JAVASCRIPT                                                 ║
-     ╚══════════════════════════════════════════════════════════════╝ -->
 <script>
-  /* ── Menu Data ──────────────────────────────────────────────────── */
-  const menus = {
-    '상품관리': [
-      { section: '상품', items: ['상품 목록', '상품 등록', '카테고리 관리'] },
-      { section: '진열·재고', items: ['상품 진열 관리', '재고 관리', '상품 옵션 관리'] },
-    ],
-    '주문관리': [
-      { section: '주문', items: ['주문 목록', '신규 주문 처리'] },
-      { section: '배송·클레임', items: ['배송 관리', '취소 관리', '반품·교환 관리', '세금계산서 관리'] },
-    ],
-    '회원관리': [
-      { section: '회원', items: ['회원 목록', '회원 등급 관리'] },
-      { section: '혜택', items: ['포인트 관리', '쿠폰 관리', '블랙리스트'] },
-    ],
-    '발주관리': [
-      { section: '발주', items: ['발주 목록', '발주서 등록', '입고 관리'] },
-      { section: '공급사', items: ['공급사 관리', '공급사 정산'] },
-    ],
-    'SMS관리': [
-      { section: '발송', items: ['SMS 즉시 발송', '예약 발송', '발송 내역 조회'] },
-      { section: '설정', items: ['수신거부 관리', '자동 발송 설정', '발송 템플릿'] },
-    ],
-    '매출정산': [
-      { section: '매출', items: ['매출 현황', '일별·월별 정산'] },
-      { section: '정산', items: ['정산 내역', 'PG 수수료 내역', '세금계산서'] },
-    ],
-    '링크셀러': [
-      { section: '셀러', items: ['셀러 목록', '링크 생성 관리'] },
-      { section: '성과·정산', items: ['성과 분석', '셀러 정산', '정산 내역'] },
-    ],
-    '제휴서비스': [
-      { section: '제휴', items: ['제휴 현황', '제휴 신청', '제휴 파트너 관리'] },
-      { section: '광고', items: ['광고 관리', '광고 성과'] },
-    ],
-    '바로앱': [
-      { section: '앱', items: ['앱 현황 대시보드', '앱 설정'] },
-      { section: '푸시·통계', items: ['푸시 알림 발송', '앱 통계', '설치 현황'] },
-    ],
-    '셀럽션': [
-      { section: '셀럽', items: ['셀럽 목록', '콘텐츠 관리'] },
-      { section: '성과·정산', items: ['셀럽 성과 분석', '정산 관리', '계약 관리'] },
-    ],
-  };
+  /* ── Menu Data (1Depth → 2Depth section → 3Depth items) ─────── */
+  const MENUS = [
+    {
+      key: '상품관리',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+      sections: [
+        { label: '상품',     items: ['상품 목록', '상품 등록', '카테고리 관리'] },
+        { label: '진열·재고', items: ['상품 진열 관리', '재고 관리', '상품 옵션 관리'] },
+      ]
+    },
+    {
+      key: '주문관리',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+      sections: [
+        { label: '주문',      items: ['주문 목록', '신규 주문 처리'] },
+        { label: '배송·클레임', items: ['배송 관리', '취소 관리', '반품·교환 관리', '세금계산서 관리'] },
+      ]
+    },
+    {
+      key: '회원관리',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+      sections: [
+        { label: '회원',  items: ['회원 목록', '회원 등급 관리'] },
+        { label: '혜택',  items: ['포인트 관리', '쿠폰 관리', '블랙리스트'] },
+      ]
+    },
+    {
+      key: '발주관리',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>`,
+      sections: [
+        { label: '발주',  items: ['발주 목록', '발주서 등록', '입고 관리'] },
+        { label: '공급사', items: ['공급사 관리', '공급사 정산'] },
+      ]
+    },
+    {
+      key: 'SMS관리',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`,
+      sections: [
+        { label: '발송',  items: ['SMS 즉시 발송', '예약 발송', '발송 내역 조회'] },
+        { label: '설정',  items: ['수신거부 관리', '자동 발송 설정', '발송 템플릿'] },
+      ]
+    },
+    {
+      key: '매출정산',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
+      sections: [
+        { label: '매출',  items: ['매출 현황', '일별·월별 정산'] },
+        { label: '정산',  items: ['정산 내역', 'PG 수수료 내역', '세금계산서'] },
+      ]
+    },
+    {
+      key: '링크셀러',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>`,
+      sections: [
+        { label: '셀러',     items: ['셀러 목록', '링크 생성 관리'] },
+        { label: '성과·정산', items: ['성과 분석', '셀러 정산', '정산 내역'] },
+      ]
+    },
+    {
+      key: '제휴서비스',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
+      sections: [
+        { label: '제휴',  items: ['제휴 현황', '제휴 신청', '제휴 파트너 관리'] },
+        { label: '광고',  items: ['광고 관리', '광고 성과'] },
+      ]
+    },
+    {
+      key: '바로앱',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+      sections: [
+        { label: '앱',      items: ['앱 현황 대시보드', '앱 설정'] },
+        { label: '푸시·통계', items: ['푸시 알림 발송', '앱 통계', '설치 현황'] },
+      ]
+    },
+    {
+      key: '셀럽션',
+      icon: `<svg class="acc1-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+      sections: [
+        { label: '셀럽',     items: ['셀럽 목록', '콘텐츠 관리'] },
+        { label: '성과·정산', items: ['셀럽 성과 분석', '정산 관리', '계약 관리'] },
+      ]
+    },
+  ];
 
-  /* ── Render 2Depth Sidebar ──────────────────────────────────────── */
-  function renderSidebar(menuKey) {
+  const CHEVRON = `<svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+  /* ── Render Accordion ───────────────────────────────────────── */
+  function renderAccordion() {
     const nav = document.getElementById('sidebarNav');
-    const sections = menus[menuKey];
-    if (!sections) { nav.innerHTML = ''; return; }
-
-    nav.innerHTML = sections.map(s => `
-      <div class="nav2-section">
-        <div class="nav2-section-header">${s.section}</div>
-        ${s.items.map((item, i) => `
-          <a class="nav2-item${i === 0 && s === sections[0] ? ' active' : ''}" href="#" onclick="setActive2(this); return false;">
-            ${item}
-          </a>`).join('')}
+    nav.innerHTML = MENUS.map(menu => `
+      <div class="acc-item">
+        <button class="acc1-btn" data-key="${menu.key}" onclick="toggleAcc(this)">
+          ${menu.icon}
+          <span class="acc1-label">${menu.key}</span>
+          ${CHEVRON}
+        </button>
+        <div class="acc1-body">
+          ${menu.sections.map(sec => `
+            <div class="acc2-section">
+              <div class="acc2-header">${sec.label}</div>
+              ${sec.items.map((item, i) => `
+                <a class="acc3-item" href="#" onclick="setActive3(this);return false;">${item}</a>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
       </div>
     `).join('');
   }
 
-  function setActive2(el) {
-    document.querySelectorAll('.nav2-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-  }
+  /* ── Toggle 1Depth Accordion (exclusive) ───────────────────── */
+  function toggleAcc(btn) {
+    const body    = btn.nextElementSibling;
+    const isOpen  = btn.classList.contains('open');
 
-  /* ── 1Depth Tab Switch ──────────────────────────────────────────── */
-  function switchMenu(btn, key) {
-    document.querySelectorAll('.nav1-item').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderSidebar(key);
-  }
+    /* Close all */
+    document.querySelectorAll('.acc1-btn.open').forEach(b => {
+      b.classList.remove('open', 'has-active');
+      b.nextElementSibling.classList.remove('open');
+    });
 
-  /* ── Sitemap ────────────────────────────────────────────────────── */
-  function renderSitemap() {
-    const grid = document.getElementById('sitemapGrid');
-    grid.innerHTML = Object.entries(menus).map(([key, sections]) => `
-      <div>
-        <div class="sitemap-section-title">${key}</div>
-        ${sections.map(s => s.items.map(item =>
-          `<div class="sitemap-link">${item}</div>`
-        ).join('')).join('')}
-      </div>
-    `).join('');
-  }
-
-  function openSitemap()  {
-    renderSitemap();
-    document.getElementById('sitemapOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSitemap() {
-    document.getElementById('sitemapOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  /* ── Logout ─────────────────────────────────────────────────────── */
-  function handleLogout() {
-    if (confirm('로그아웃 하시겠습니까?')) {
-      alert('로그아웃 되었습니다.');
+    /* Open clicked (if it was closed) */
+    if (!isOpen) {
+      btn.classList.add('open');
+      body.classList.add('open');
     }
   }
 
-  /* ── Onboarding Steps ───────────────────────────────────────────── */
+  /* ── Set Active 3Depth ──────────────────────────────────────── */
+  function setActive3(el) {
+    document.querySelectorAll('.acc3-item.active').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+    /* Mark parent 1Depth as has-active */
+    const btn = el.closest('.acc-item').querySelector('.acc1-btn');
+    document.querySelectorAll('.acc1-btn.has-active').forEach(b => b.classList.remove('has-active'));
+    btn.classList.add('has-active');
+  }
+
+  /* ── Sitemap ────────────────────────────────────────────────── */
+  function renderSitemap() {
+    document.getElementById('sitemapGrid').innerHTML = MENUS.map(m => `
+      <div>
+        <div class="sitemap-section-title">${m.key}</div>
+        ${m.sections.map(s => `
+          <div class="sitemap-2depth">${s.label}</div>
+          ${s.items.map(item => `<div class="sitemap-link">${item}</div>`).join('')}
+        `).join('')}
+      </div>
+    `).join('');
+  }
+  function openSitemap()  { renderSitemap(); document.getElementById('sitemapOverlay').classList.add('open'); }
+  function closeSitemap() { document.getElementById('sitemapOverlay').classList.remove('open'); }
+
+  /* ── Logout ─────────────────────────────────────────────────── */
+  function handleLogout() {
+    if (confirm('로그아웃 하시겠습니까?')) alert('로그아웃 되었습니다.');
+  }
+
+  /* ── Onboarding ─────────────────────────────────────────────── */
   let obStep = 1;
   const OB_TOTAL = 3;
 
   function obRender() {
     for (let i = 1; i <= OB_TOTAL; i++) {
-      const pane = document.getElementById(`obPane${i}`);
-      const dot  = document.getElementById(`dot${i}`);
-      const lbl  = document.getElementById(`lbl${i}`);
-      pane.classList.toggle('active', i === obStep);
-      dot.classList.remove('active', 'done');
-      lbl.classList.remove('active', 'done');
-      if (i < obStep)       { dot.innerHTML = '✓'; dot.classList.add('done'); lbl.classList.add('done'); }
-      else if (i === obStep){ dot.classList.add('active'); lbl.classList.add('active'); }
-      else                  { dot.innerHTML = i; }
+      document.getElementById(`obPane${i}`).classList.toggle('active', i === obStep);
+      const dot = document.getElementById(`dot${i}`);
+      const lbl = document.getElementById(`lbl${i}`);
+      dot.classList.remove('active','done');
+      lbl.classList.remove('active','done');
+      if (i < obStep)       { dot.innerHTML='✓'; dot.classList.add('done'); lbl.classList.add('done'); }
+      else if (i === obStep){ dot.innerHTML=i;   dot.classList.add('active'); lbl.classList.add('active'); }
+      else                  { dot.innerHTML=i; }
     }
-    for (let i = 1; i < OB_TOTAL; i++) {
-      const line = document.getElementById(`line${i}`);
-      line.classList.toggle('done', i < obStep);
-    }
-    const prevBtn = document.getElementById('obPrev');
-    const nextBtn = document.getElementById('obNext');
-    const skipLnk = document.getElementById('obSkip');
-    prevBtn.style.display = obStep > 1 ? '' : 'none';
-    if (obStep === OB_TOTAL) {
-      nextBtn.textContent = '대시보드 시작하기 →';
-      skipLnk.style.visibility = 'hidden';
-    } else {
-      nextBtn.textContent = obStep === 1 ? '시작하기 →' : '다음 →';
-      skipLnk.style.visibility = 'visible';
-    }
-  }
+    for (let i = 1; i < OB_TOTAL; i++)
+      document.getElementById(`line${i}`).classList.toggle('done', i < obStep);
 
-  function obNextStep() {
-    if (obStep < OB_TOTAL) { obStep++; obRender(); }
-    else { closeOnboarding(); }
+    const prev = document.getElementById('obPrev');
+    const next = document.getElementById('obNext');
+    const skip = document.getElementById('obSkip');
+    prev.style.display = obStep > 1 ? '' : 'none';
+    next.textContent   = obStep === OB_TOTAL ? '대시보드 시작하기 →' : (obStep === 1 ? '시작하기 →' : '다음 →');
+    skip.style.visibility = obStep === OB_TOTAL ? 'hidden' : 'visible';
   }
-  function obPrevStep() {
-    if (obStep > 1) { obStep--; obRender(); }
-  }
+  function obNext() { obStep < OB_TOTAL ? (obStep++, obRender()) : closeOnboarding(); }
+  function obPrev() { obStep > 1 && (obStep--, obRender()); }
   function closeOnboarding() {
     document.getElementById('onboardingOverlay').style.display = 'none';
     document.body.style.overflow = '';
   }
 
-  /* ── Pill tabs (chart period) ───────────────────────────────────── */
-  document.querySelectorAll('.pill-tabs').forEach(group => {
-    group.querySelectorAll('.pill-tab').forEach(tab => {
+  /* ── Pill tabs ──────────────────────────────────────────────── */
+  document.querySelectorAll('.pill-tabs').forEach(group =>
+    group.querySelectorAll('.pill-tab').forEach(tab =>
       tab.addEventListener('click', () => {
         group.querySelectorAll('.pill-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-      });
-    });
-  });
+      })
+    )
+  );
 
-  /* ── Init ───────────────────────────────────────────────────────── */
-  renderSidebar('상품관리');
+  /* ── Init ───────────────────────────────────────────────────── */
+  renderAccordion();
+
+  /* Open 첫 번째 메뉴(상품관리) by default */
+  const firstBtn = document.querySelector('.acc1-btn');
+  if (firstBtn) {
+    firstBtn.classList.add('open');
+    firstBtn.nextElementSibling.classList.add('open');
+    /* Set first 3Depth item as active */
+    const firstItem = firstBtn.nextElementSibling.querySelector('.acc3-item');
+    if (firstItem) firstItem.classList.add('active');
+  }
+
   obRender();
-  document.body.style.overflow = 'hidden'; // lock scroll while onboarding shows
+  document.body.style.overflow = 'hidden'; /* lock while onboarding */
 </script>
 
 </body>
