@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System — ShopAdmin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
+  <style>
+    /* ── Tokens ────────────────────────────────────────────────── */
+    :root {
+      --primary:          #0a0a0a; --on-primary:    #ffffff;
+      --brand-green:      #00d4a4; --brand-green-deep: #00b48a; --brand-green-soft: #7cebcb;
+      --brand-tag:        #3772cf; --brand-warn:    #c37d0d;  --brand-annotate: #1ba673;
+      --brand-error:      #d45656; --brand-cursor:  #888888;
+      --testimonial-orange: #f55a3c; --testimonial-orange-deep: #cc3a1f;
+      --hero-sky-from:    #87a8c8; --hero-sky-to:   #f5e9d8;
+      --hero-dark-from:   #1a3d4a; --hero-dark-to:  #2d5a4f;
+      --canvas:           #ffffff; --canvas-dark:   #0a0a0a;
+      --surface:          #f7f7f7; --surface-soft:  #fafafa; --surface-code: #1c1c1e;
+      --hairline:         #e5e5e5; --hairline-soft: #ededed; --hairline-dark: #1f1f1f;
+      --ink:              #0a0a0a; --charcoal:      #1c1c1e; --slate:  #3a3a3c;
+      --steel:            #5a5a5c; --stone:         #888888; --muted:  #a8a8aa;
+      --on-dark:          #ffffff; --on-dark-muted: #b3b3b3;
+      --r-xs: 4px; --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-xxl: 24px; --r-full: 9999px;
+    }
+
+    /* ── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px; line-height: 1.5; color: var(--ink);
+      background: var(--surface);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── Page Header ───────────────────────────────────────────── */
+    .ds-topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--canvas); border-bottom: 1px solid var(--hairline);
+      height: 52px; display: flex; align-items: center;
+      padding: 0 24px; gap: 12px;
+    }
+    .ds-topbar-logo { display: flex; align-items: center; gap: 8px; }
+    .ds-logo-mark {
+      width: 24px; height: 24px; background: var(--primary); border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ds-topbar-title { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+    .ds-topbar-badge {
+      font-size: 11px; font-weight: 600;
+      background: var(--surface); color: var(--stone);
+      border: 1px solid var(--hairline); border-radius: var(--r-full);
+      padding: 2px 8px;
+    }
+    .ds-topbar-source {
+      font-size: 12px; color: var(--stone);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .ds-topbar-spacer { flex: 1; }
+    .ds-back-link {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 500; color: var(--steel);
+      border: 1px solid var(--hairline); border-radius: var(--r-full);
+      padding: 5px 14px;
+    }
+    .ds-back-link:hover { background: var(--surface); color: var(--ink); }
+
+    /* ── Layout ────────────────────────────────────────────────── */
+    .ds-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      max-width: 1200px; margin: 0 auto;
+      min-height: calc(100vh - 52px);
+    }
+
+    /* ── Left Nav ──────────────────────────────────────────────── */
+    .ds-sidenav {
+      position: sticky; top: 52px;
+      height: calc(100vh - 52px);
+      overflow-y: auto; padding: 24px 0;
+      border-right: 1px solid var(--hairline);
+      background: var(--canvas);
+    }
+    .ds-nav-section { margin-bottom: 4px; }
+    .ds-nav-section-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--muted); padding: 12px 20px 4px;
+    }
+    .ds-nav-link {
+      display: block; padding: 6px 20px;
+      font-size: 13px; color: var(--steel); border-radius: 0;
+      border-left: 2px solid transparent;
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+    .ds-nav-link:hover { color: var(--ink); background: var(--surface); }
+    .ds-nav-link.active { color: var(--ink); font-weight: 500; border-left-color: var(--brand-green); background: rgba(0,212,164,0.04); }
+
+    /* ── Main Content ──────────────────────────────────────────── */
+    .ds-main { padding: 40px 48px 80px; display: flex; flex-direction: column; gap: 64px; }
+
+    /* ── Section ───────────────────────────────────────────────── */
+    .ds-section {}
+    .ds-section-header { margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--hairline); }
+    .ds-section-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--ink); }
+    .ds-section-desc { font-size: 14px; color: var(--steel); margin-top: 6px; line-height: 1.6; }
+
+    .ds-subsection { margin-bottom: 32px; }
+    .ds-subsection-title {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--muted); margin-bottom: 16px;
+    }
+
+    /* ── Token chip ────────────────────────────────────────────── */
+    .token {
+      display: inline-block; font-size: 12px; font-weight: 500;
+      background: rgba(55,114,207,0.08); color: var(--brand-tag);
+      border-radius: var(--r-xs); padding: 1px 6px;
+    }
+    .meta-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .meta-val { font-size: 12px; color: var(--stone); }
+
+    /* ── Preview box ───────────────────────────────────────────── */
+    .preview-box {
+      background: var(--canvas); border: 1px solid var(--hairline);
+      border-radius: var(--r-lg); padding: 28px;
+    }
+    .preview-box.dark  { background: var(--canvas-dark); border-color: var(--hairline-dark); }
+    .preview-box.surface { background: var(--surface-soft); }
+    .preview-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--muted); margin-bottom: 16px;
+    }
+    .preview-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .preview-row.top { align-items: flex-start; }
+
+    /* ═══════════════════════════════════════════════════════
+       COLORS
+    ═══════════════════════════════════════════════════════ */
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .swatch { border-radius: var(--r-md); overflow: hidden; border: 1px solid rgba(0,0,0,0.06); }
+    .swatch-box { height: 64px; width: 100%; display: flex; align-items: flex-end; padding: 6px 8px; }
+    .swatch-hex { font-size: 11px; font-weight: 500; opacity: 0.75; }
+    .swatch-info { padding: 8px 10px; background: var(--canvas); }
+    .swatch-name { font-size: 12px; font-weight: 500; color: var(--charcoal); }
+    .swatch-desc { font-size: 11px; color: var(--muted); margin-top: 1px; line-height: 1.3; }
+
+    /* ═══════════════════════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════════════════════ */
+    .type-row {
+      display: grid; grid-template-columns: 1fr 240px;
+      gap: 24px; align-items: center;
+      padding: 20px 0; border-bottom: 1px solid var(--hairline-soft);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-sample { overflow: hidden; }
+    .type-meta-col { flex-shrink: 0; }
+    .type-meta-col .token { margin-bottom: 6px; display: block; }
+    .type-detail { font-size: 12px; color: var(--stone); line-height: 1.8; }
+
+    /* ═══════════════════════════════════════════════════════
+       SPACING
+    ═══════════════════════════════════════════════════════ */
+    .spacing-list { display: flex; flex-direction: column; gap: 10px; }
+    .spacing-item { display: flex; align-items: center; gap: 16px; }
+    .spacing-bar { height: 10px; background: var(--brand-green); border-radius: 2px; flex-shrink: 0; }
+    .spacing-label { width: 80px; flex-shrink: 0; }
+    .spacing-token { font-size: 13px; font-weight: 500; color: var(--charcoal); }
+    .spacing-px    { font-size: 12px; color: var(--stone); }
+
+    /* ═══════════════════════════════════════════════════════
+       BORDER RADIUS
+    ═══════════════════════════════════════════════════════ */
+    .radius-grid { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+    .radius-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .radius-box {
+      width: 60px; height: 60px;
+      background: var(--primary); opacity: 0.9;
+    }
+    .radius-info { text-align: center; }
+    .radius-token { font-size: 12px; font-weight: 500; color: var(--charcoal); display: block; }
+    .radius-px    { font-size: 11px; color: var(--stone); }
+
+    /* ═══════════════════════════════════════════════════════
+       ELEVATION
+    ═══════════════════════════════════════════════════════ */
+    .elevation-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+    .elev-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .elev-box {
+      width: 100px; height: 80px;
+      background: var(--canvas); border-radius: var(--r-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; color: var(--steel);
+    }
+    .elev-label { font-size: 12px; color: var(--stone); text-align: center; }
+    .elev-desc   { font-size: 11px; color: var(--muted); text-align: center; }
+
+    /* ═══════════════════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════════════════ */
+    .btn-grid { display: flex; flex-direction: column; gap: 20px; }
+    .btn-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .btn-info { min-width: 200px; }
+    .btn-info .token { margin-bottom: 3px; display: block; }
+    .btn-info .meta-val { font-size: 11px; }
+
+    /* Actual buttons mirroring design tokens */
+    .b-primary  { background: #0a0a0a; color: #fff; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: none; cursor: pointer; font-family: inherit; }
+    .b-primary-pressed { background: #1c1c1e; color: #fff; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: none; cursor: pointer; font-family: inherit; }
+    .b-primary-disabled { background: #e5e5e5; color: #a8a8aa; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: none; cursor: not-allowed; font-family: inherit; }
+    .b-accent   { background: #00d4a4; color: #0a0a0a; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: none; cursor: pointer; font-family: inherit; }
+    .b-on-dark  { background: #ffffff; color: #0a0a0a; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: none; cursor: pointer; font-family: inherit; }
+    .b-secondary { background: transparent; color: #0a0a0a; font-size: 14px; font-weight: 500; border-radius: 9999px; padding: 10px 20px; border: 1px solid #e5e5e5; cursor: pointer; font-family: inherit; }
+    .b-ghost     { background: transparent; color: #0a0a0a; font-size: 14px; font-weight: 500; border-radius: 8px; padding: 8px 12px; border: none; cursor: pointer; font-family: inherit; }
+    .b-link      { background: transparent; color: #0a0a0a; font-size: 14px; font-weight: 500; padding: 0; border: none; cursor: pointer; font-family: inherit; text-decoration: underline; text-underline-offset: 2px; }
+    .b-icon-circ { background: #fff; color: #0a0a0a; width: 32px; height: 32px; border-radius: 9999px; border: 1px solid #e5e5e5; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; }
+
+    /* ═══════════════════════════════════════════════════════
+       CARDS
+    ═══════════════════════════════════════════════════════ */
+    .card-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .c-base     { background:#fff; border-radius:12px; padding:24px; border:1px solid #e5e5e5; }
+    .c-feature  { background:#f7f7f7; border-radius:12px; padding:32px; }
+    .c-pricing  { background:#fff; border-radius:12px; padding:32px; border:1px solid #e5e5e5; }
+    .c-featured { background:#fff; border-radius:12px; padding:32px; border:2px solid #00d4a4; box-shadow:rgba(0,212,164,0.08) 0 8px 24px; }
+    .c-testimonial { background:#f55a3c; border-radius:12px; padding:32px; color:#fff; }
+    .c-quote    { background:#fff; border-radius:12px; padding:32px; border:1px solid #e5e5e5; }
+    .card-title-demo { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 6px; }
+    .card-body-demo  { font-size: 12px; color: var(--stone); line-height: 1.5; }
+    .c-testimonial .card-body-demo { color: rgba(255,255,255,0.8); }
+
+    /* ═══════════════════════════════════════════════════════
+       INPUTS
+    ═══════════════════════════════════════════════════════ */
+    .input-list { display: flex; flex-direction: column; gap: 24px; }
+    .input-row { display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+    .input-demo { flex: 1; min-width: 200px; }
+    .i-base {
+      width: 100%; height: 40px; background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 8px; padding: 0 16px; font-size: 14px; font-family: inherit; outline: none; color: #0a0a0a;
+    }
+    .i-focus {
+      width: 100%; height: 40px; background: #fff; border: 2px solid #00d4a4;
+      border-radius: 8px; padding: 0 15px; font-size: 14px; font-family: inherit; outline: none; color: #0a0a0a;
+    }
+    .i-search {
+      display: flex; align-items: center; gap: 6px;
+      background: #f7f7f7; border: 1px solid #e5e5e5; border-radius: 8px;
+      padding: 0 14px; height: 36px; color: #5a5a5c; font-size: 13px;
+      width: 240px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TABS
+    ═══════════════════════════════════════════════════════ */
+    .seg-tabs { display: flex; border-bottom: 1px solid #e5e5e5; }
+    .seg-tab { padding: 10px 16px; font-size: 14px; font-weight: 500; color: #5a5a5c; border: none; border-bottom: 2px solid transparent; cursor: pointer; background: none; font-family: inherit; margin-bottom: -1px; }
+    .seg-tab.active { color: #0a0a0a; border-bottom-color: #0a0a0a; }
+
+    .pill-tabs-demo { display: flex; gap: 4px; }
+    .pt { background: #fff; border: 1px solid #e5e5e5; border-radius: 9999px; padding: 7px 16px; font-size: 13px; font-weight: 500; color: #5a5a5c; cursor: pointer; font-family: inherit; }
+    .pt.active { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
+
+    .toggle-demo { display: inline-flex; background: #f7f7f7; border-radius: 9999px; padding: 4px; gap: 2px; }
+    .tg-opt { padding: 5px 14px; font-size: 13px; font-weight: 500; color: #5a5a5c; border-radius: 9999px; cursor: pointer; }
+    .tg-opt.active { background: #fff; color: #0a0a0a; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+    /* ═══════════════════════════════════════════════════════
+       BADGES
+    ═══════════════════════════════════════════════════════ */
+    .badge-grid { display: flex; flex-direction: column; gap: 20px; }
+    .badge-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--hairline-soft); }
+    .badge-row:last-child { border-bottom: none; }
+    .badge-preview { min-width: 120px; }
+    .badge-info .token { display: block; margin-bottom: 4px; }
+    .badge-info .meta-val { font-size: 12px; }
+
+    /* Badge renders */
+    .bd-discount { background: #00d4a4; color: #0a0a0a; font-size: 13px; font-weight: 600; border-radius: 9999px; padding: 2px 8px; display: inline-block; }
+    .bd-required { background: #d45656; color: #fff; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 6px; padding: 2px 6px; display: inline-block; }
+    .bd-type     { background: #f7f7f7; color: #5a5a5c; font-size: 13px; border-radius: 6px; padding: 2px 6px; display: inline-block; }
+    .bd-tag      { background: rgba(55,114,207,0.15); color: #3772cf; font-size: 13px; font-weight: 600; border-radius: 6px; padding: 2px 8px; display: inline-block; }
+
+    /* ═══════════════════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════════════════ */
+    .nav-demo-box {
+      background: var(--canvas); border: 1px solid var(--hairline);
+      border-radius: var(--r-lg); overflow: hidden;
+    }
+    .nav-demo-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 52px; border-bottom: 1px solid var(--hairline);
+    }
+    .nav-demo-sidebar {
+      display: flex; padding: 12px 6px;
+      gap: 1px; flex-direction: column;
+    }
+    .nd-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+    .nd-logo-mark { width: 22px; height: 22px; background: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+    .nd-actions { display: flex; align-items: center; gap: 8px; }
+    .nd-search { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-md); height: 32px; padding: 0 12px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 5px; width: 180px; }
+    .nd-btn { background: var(--primary); color: #fff; border-radius: 9999px; padding: 6px 14px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; font-family: inherit; }
+    .nd-nav-item { padding: 7px 14px; border-radius: 6px; font-size: 13px; color: var(--steel); cursor: pointer; }
+    .nd-nav-item.active { background: var(--surface); color: var(--ink); font-weight: 500; }
+    .nd-section-hdr { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 10px 14px 3px; }
+
+    /* ═══════════════════════════════════════════════════════
+       CODE
+    ═══════════════════════════════════════════════════════ */
+    .code-block-demo {
+      background: #1c1c1e; border-radius: 8px; overflow: hidden; font-size: 14px;
+    }
+    .code-block-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 16px; border-bottom: 1px solid #1f1f1f;
+      font-size: 13px; color: #b3b3b3;
+    }
+    .code-copy-btn {
+      font-size: 12px; color: #b3b3b3; background: transparent; border: 1px solid #1f1f1f;
+      border-radius: 6px; padding: 2px 8px; cursor: pointer; font-family: inherit;
+    }
+    .code-block-body { padding: 16px; color: #fff; line-height: 1.6; }
+    .code-kw   { color: #ff79c6; }
+    .code-fn   { color: #50fa7b; }
+    .code-str  { color: #f1fa8c; }
+    .code-num  { color: #bd93f9; }
+    .code-cmt  { color: #6272a4; }
+    .code-inline-demo {
+      background: #f7f7f7; color: #1c1c1e; font-weight: 500;
+      border-radius: 4px; padding: 2px 6px; border: 1px solid #e5e5e5;
+      font-size: 13px; display: inline;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       HERO BANDS
+    ═══════════════════════════════════════════════════════ */
+    .hero-band-sky  { background: linear-gradient(180deg, #87a8c8 0%, #f5e9d8 100%); border-radius: var(--r-lg); padding: 40px 32px; }
+    .hero-band-dark { background: linear-gradient(135deg, #1a3d4a 0%, #2d5a4f 100%); border-radius: var(--r-lg); padding: 40px 32px; color: #fff; }
+
+    /* ═══════════════════════════════════════════════════════
+       PROMO BANNER
+    ═══════════════════════════════════════════════════════ */
+    .promo-band {
+      background: #0a0a0a; color: #fff; border-radius: var(--r-md);
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       PROPERTY ROW (docs)
+    ═══════════════════════════════════════════════════════ */
+    .prop-table { border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; }
+    .prop-row {
+      display: grid; grid-template-columns: 1fr 100px 60px 1fr;
+      gap: 16px; padding: 14px 20px;
+      border-bottom: 1px solid var(--hairline-soft);
+      font-size: 14px; align-items: center;
+    }
+    .prop-row:last-child { border-bottom: none; }
+    .prop-row-hdr { background: var(--surface); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--steel); }
+
+    /* ═══════════════════════════════════════════════════════
+       DO / DON'T
+    ═══════════════════════════════════════════════════════ */
+    .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .rule-card { border-radius: var(--r-md); padding: 16px 20px; }
+    .rule-card.do   { background: rgba(0,212,164,0.04); border: 1px solid rgba(0,212,164,0.2); }
+    .rule-card.dont { background: rgba(212,86,86,0.04);  border: 1px solid rgba(212,86,86,0.2); }
+    .rule-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .rule-card.do   .rule-header { color: var(--brand-green-deep); }
+    .rule-card.dont .rule-header { color: var(--brand-error); }
+    .rule-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .rule-list li { font-size: 13px; color: var(--steel); line-height: 1.5; display: flex; gap: 8px; }
+    .rule-list li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .rule-card.do   .rule-list li::before { background: var(--brand-green-deep); }
+    .rule-card.dont .rule-list li::before { background: var(--brand-error); }
+
+    /* ── Scrollbar ──────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ───────────────────────────────────────────────────── -->
+<header class="ds-topbar">
+  <div class="ds-topbar-logo">
+    <div class="ds-logo-mark">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="#fff" opacity=".9"/></svg>
+    </div>
+    <span class="ds-topbar-title">Design System</span>
+    <span class="ds-topbar-badge">alpha</span>
+  </div>
+  <div class="ds-topbar-source">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    DESIGN.md 기반
+  </div>
+  <div class="ds-topbar-spacer"></div>
+  <a href="index.html" class="ds-back-link">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    관리자 화면으로
+  </a>
+</header>
+
+<div class="ds-layout">
+
+  <!-- ── LEFT NAV ──────────────────────────────────────────────── -->
+  <nav class="ds-sidenav" id="sidenav">
+    <div class="ds-nav-section">
+      <div class="ds-nav-section-label">소개</div>
+      <a href="#overview"    class="ds-nav-link active">개요</a>
+    </div>
+    <div class="ds-nav-section">
+      <div class="ds-nav-section-label">Foundation</div>
+      <a href="#colors"      class="ds-nav-link">색상</a>
+      <a href="#typography"  class="ds-nav-link">타이포그래피</a>
+      <a href="#spacing"     class="ds-nav-link">간격</a>
+      <a href="#radius"      class="ds-nav-link">모서리 반경</a>
+      <a href="#elevation"   class="ds-nav-link">그림자·고도</a>
+    </div>
+    <div class="ds-nav-section">
+      <div class="ds-nav-section-label">Components</div>
+      <a href="#buttons"     class="ds-nav-link">버튼</a>
+      <a href="#cards"       class="ds-nav-link">카드</a>
+      <a href="#inputs"      class="ds-nav-link">입력폼</a>
+      <a href="#tabs"        class="ds-nav-link">탭 · 토글</a>
+      <a href="#badges"      class="ds-nav-link">뱃지 · 상태</a>
+      <a href="#navigation"  class="ds-nav-link">내비게이션</a>
+      <a href="#code"        class="ds-nav-link">코드</a>
+      <a href="#hero"        class="ds-nav-link">히어로 · 배너</a>
+      <a href="#docs"        class="ds-nav-link">문서 컴포넌트</a>
+    </div>
+    <div class="ds-nav-section">
+      <div class="ds-nav-section-label">가이드</div>
+      <a href="#rules"       class="ds-nav-link">Do's &amp; Don'ts</a>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────── -->
+  <main class="ds-main">
+
+    <!-- ═══════ OVERVIEW ═══════ -->
+    <section id="overview" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">개요</div>
+        <div class="ds-section-desc">
+          Mintlify 디자인 시스템 — 마케팅 히어로부터 개발자 문서까지 일관된 UI 언어를 제공합니다.
+          단일 서체 <strong>Pretendard</strong>, 시그니처 민트 <strong>#00d4a4</strong>, 블랙 필 버튼이 핵심 아이덴티티입니다.
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="preview-box" style="border-left:3px solid var(--brand-green);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">단일 서체</div>
+          <div style="font-size:13px;color:var(--steel);">Pretendard 하나로 모든 UI 텍스트를 통일합니다.</div>
+        </div>
+        <div class="preview-box" style="border-left:3px solid var(--primary);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">플랫 + 전략적 깊이</div>
+          <div style="font-size:13px;color:var(--steel);">기본은 플랫, 히어로 목업과 추천 카드에만 그림자를 씁니다.</div>
+        </div>
+        <div class="preview-box" style="border-left:3px solid var(--brand-tag);">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px;">민트는 신중하게</div>
+          <div style="font-size:13px;color:var(--steel);"><code class="token">brand-green</code>은 강조 CTA와 활성 상태에만 사용합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ COLORS ═══════ -->
+    <section id="colors" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">색상</div>
+        <div class="ds-section-desc">30개 토큰을 4개 카테고리로 구성합니다. <code class="token">brand-green</code>은 액센트 전용으로 절제해서 사용하세요.</div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Brand &amp; Accent</div>
+        <div class="color-grid">
+          <div class="swatch"><div class="swatch-box" style="background:#0a0a0a;"><span class="swatch-hex" style="color:#fff;">#0a0a0a</span></div><div class="swatch-info"><div class="swatch-name">primary</div><div class="swatch-desc">주 버튼·텍스트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#ffffff;border-bottom:1px solid #e5e5e5;"><span class="swatch-hex" style="color:#888;">#ffffff</span></div><div class="swatch-info"><div class="swatch-name">on-primary</div><div class="swatch-desc">버튼 위 텍스트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#00d4a4;"><span class="swatch-hex" style="color:#006b54;">#00d4a4</span></div><div class="swatch-info"><div class="swatch-name">brand-green ★</div><div class="swatch-desc">시그니처 민트 액센트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#00b48a;"><span class="swatch-hex" style="color:#004d3b;">#00b48a</span></div><div class="swatch-info"><div class="swatch-name">brand-green-deep</div><div class="swatch-desc">민트 활성·눌림</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#7cebcb;"><span class="swatch-hex" style="color:#1a5c4a;">#7cebcb</span></div><div class="swatch-info"><div class="swatch-name">brand-green-soft</div><div class="swatch-desc">성공 배경 틴트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#3772cf;"><span class="swatch-hex" style="color:#fff;">#3772cf</span></div><div class="swatch-info"><div class="swatch-name">brand-tag</div><div class="swatch-desc">문서 태그·참조</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#c37d0d;"><span class="swatch-hex" style="color:#fff;">#c37d0d</span></div><div class="swatch-info"><div class="swatch-name">brand-warn</div><div class="swatch-desc">경고·deprecated</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#1ba673;"><span class="swatch-hex" style="color:#fff;">#1ba673</span></div><div class="swatch-info"><div class="swatch-name">brand-annotate</div><div class="swatch-desc">코드 어노테이션</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#d45656;"><span class="swatch-hex" style="color:#fff;">#d45656</span></div><div class="swatch-info"><div class="swatch-name">brand-error</div><div class="swatch-desc">필수항목·에러</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#f55a3c;"><span class="swatch-hex" style="color:#fff;">#f55a3c</span></div><div class="swatch-info"><div class="swatch-name">testimonial-orange</div><div class="swatch-desc">인용 강조 카드</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#cc3a1f;"><span class="swatch-hex" style="color:#fff;">#cc3a1f</span></div><div class="swatch-info"><div class="swatch-name">testimonial-orange-deep</div><div class="swatch-desc">인용 카드 눌림</div></div></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Surface</div>
+        <div class="color-grid">
+          <div class="swatch"><div class="swatch-box" style="background:#ffffff;border-bottom:1px solid #e5e5e5;"><span class="swatch-hex" style="color:#888;">#ffffff</span></div><div class="swatch-info"><div class="swatch-name">canvas</div><div class="swatch-desc">카드·페이지 배경</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#0a0a0a;"><span class="swatch-hex" style="color:#fff;">#0a0a0a</span></div><div class="swatch-info"><div class="swatch-name">canvas-dark</div><div class="swatch-desc">프로모 배너</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#f7f7f7;"><span class="swatch-hex" style="color:#888;">#f7f7f7</span></div><div class="swatch-info"><div class="swatch-name">surface</div><div class="swatch-desc">섹션 배경·활성 사이드바</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#fafafa;"><span class="swatch-hex" style="color:#888;">#fafafa</span></div><div class="swatch-info"><div class="swatch-name">surface-soft</div><div class="swatch-desc">조용한 섹션 배경</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#1c1c1e;"><span class="swatch-hex" style="color:#fff;">#1c1c1e</span></div><div class="swatch-info"><div class="swatch-name">surface-code</div><div class="swatch-desc">코드 블록 배경</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#e5e5e5;"><span class="swatch-hex" style="color:#666;">#e5e5e5</span></div><div class="swatch-info"><div class="swatch-name">hairline</div><div class="swatch-desc">주요 구분선·테두리</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#ededed;"><span class="swatch-hex" style="color:#666;">#ededed</span></div><div class="swatch-info"><div class="swatch-name">hairline-soft</div><div class="swatch-desc">테이블 행 구분</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#1f1f1f;"><span class="swatch-hex" style="color:#fff;">#1f1f1f</span></div><div class="swatch-info"><div class="swatch-name">hairline-dark</div><div class="swatch-desc">다크 표면 구분선</div></div></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Text</div>
+        <div class="color-grid">
+          <div class="swatch"><div class="swatch-box" style="background:#0a0a0a;"><span class="swatch-hex" style="color:#fff;">#0a0a0a</span></div><div class="swatch-info"><div class="swatch-name">ink</div><div class="swatch-desc">헤드라인·주요 텍스트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#1c1c1e;"><span class="swatch-hex" style="color:#fff;">#1c1c1e</span></div><div class="swatch-info"><div class="swatch-name">charcoal</div><div class="swatch-desc">본문·인라인 코드</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#3a3a3c;"><span class="swatch-hex" style="color:#fff;">#3a3a3c</span></div><div class="swatch-info"><div class="swatch-name">slate</div><div class="swatch-desc">보조 텍스트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#5a5a5c;"><span class="swatch-hex" style="color:#fff;">#5a5a5c</span></div><div class="swatch-info"><div class="swatch-name">steel</div><div class="swatch-desc">3차 텍스트·사이드바</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#888888;"><span class="swatch-hex" style="color:#fff;">#888888</span></div><div class="swatch-info"><div class="swatch-name">stone</div><div class="swatch-desc">캡션·뮤트 레이블</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#a8a8aa;"><span class="swatch-hex" style="color:#fff;">#a8a8aa</span></div><div class="swatch-info"><div class="swatch-name">muted</div><div class="swatch-desc">비활성·플레이스홀더</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#ffffff;border-bottom:1px solid #e5e5e5;"><span class="swatch-hex" style="color:#888;">#ffffff</span></div><div class="swatch-info"><div class="swatch-name">on-dark</div><div class="swatch-desc">다크 표면 위 텍스트</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#b3b3b3;"><span class="swatch-hex" style="color:#555;">#b3b3b3</span></div><div class="swatch-info"><div class="swatch-name">on-dark-muted</div><div class="swatch-desc">코드 블록 헤더</div></div></div>
+        </div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Hero Atmospheric</div>
+        <div class="color-grid">
+          <div class="swatch"><div class="swatch-box" style="background:#87a8c8;"><span class="swatch-hex" style="color:#fff;">#87a8c8</span></div><div class="swatch-info"><div class="swatch-name">hero-sky-from</div><div class="swatch-desc">홈 히어로 그라디언트 시작</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#f5e9d8;"><span class="swatch-hex" style="color:#888;">#f5e9d8</span></div><div class="swatch-info"><div class="swatch-name">hero-sky-to</div><div class="swatch-desc">홈 히어로 그라디언트 끝</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#1a3d4a;"><span class="swatch-hex" style="color:#fff;">#1a3d4a</span></div><div class="swatch-info"><div class="swatch-name">hero-dark-from</div><div class="swatch-desc">스타트업 히어로 시작</div></div></div>
+          <div class="swatch"><div class="swatch-box" style="background:#2d5a4f;"><span class="swatch-hex" style="color:#fff;">#2d5a4f</span></div><div class="swatch-info"><div class="swatch-name">hero-dark-to</div><div class="swatch-desc">스타트업 히어로 끝</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TYPOGRAPHY ═══════ -->
+    <section id="typography" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">타이포그래피</div>
+        <div class="ds-section-desc">모든 표면에 <strong>Pretendard</strong> 단일 서체를 사용합니다. 18개 타입 스케일로 계층을 만듭니다.</div>
+      </div>
+      <div class="preview-box">
+        <!-- Display -->
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:72px;font-weight:600;line-height:1.05;letter-spacing:-2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">쇼핑몰 관리자</div></div>
+          <div class="type-meta-col"><span class="token">hero-display</span><div class="type-detail">72px · 600 · 1.05 · -2px</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:56px;font-weight:600;line-height:1.1;letter-spacing:-1.5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">상품 등록과 주문 관리</div></div>
+          <div class="type-meta-col"><span class="token">display-lg</span><div class="type-detail">56px · 600 · 1.10 · -1.5px</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:48px;font-weight:600;line-height:1.1;letter-spacing:-1px;">매출 현황 대시보드</div></div>
+          <div class="type-meta-col"><span class="token">heading-1</span><div class="type-detail">48px · 600 · 1.10 · -1px</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:36px;font-weight:600;line-height:1.2;letter-spacing:-0.5px;">오늘의 신규 주문 현황</div></div>
+          <div class="type-meta-col"><span class="token">heading-2</span><div class="type-detail">36px · 600 · 1.20 · -0.5px</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:28px;font-weight:600;line-height:1.25;">재고 부족 상품 알림</div></div>
+          <div class="type-meta-col"><span class="token">heading-3</span><div class="type-detail">28px · 600 · 1.25</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:22px;font-weight:600;line-height:1.3;">카테고리별 판매 분석</div></div>
+          <div class="type-meta-col"><span class="token">heading-4</span><div class="type-detail">22px · 600 · 1.30</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:18px;font-weight:600;line-height:1.4;">링크셀러 성과 리포트</div></div>
+          <div class="type-meta-col"><span class="token">heading-5</span><div class="type-detail">18px · 600 · 1.40</div></div>
+        </div>
+        <!-- Body -->
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:18px;font-weight:400;line-height:1.5;color:var(--steel);">ShopAdmin으로 쇼핑몰 운영을 시작해보세요.</div></div>
+          <div class="type-meta-col"><span class="token">subtitle</span><div class="type-detail">18px · 400 · 1.50</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:16px;font-weight:400;line-height:1.5;">오늘의 매출 현황 및 신규 주문을 실시간으로 확인합니다.</div></div>
+          <div class="type-meta-col"><span class="token">body-md</span><div class="type-detail">16px · 400 · 1.50</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:16px;font-weight:500;line-height:1.5;">오늘의 매출 현황 및 신규 주문을 실시간으로 확인합니다.</div></div>
+          <div class="type-meta-col"><span class="token">body-md-medium</span><div class="type-detail">16px · 500 · 1.50</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.5;color:var(--steel);">아이보리 린넨 원피스 (M) 재고가 3개 남았습니다.</div></div>
+          <div class="type-meta-col"><span class="token">body-sm</span><div class="type-detail">14px · 400 · 1.50</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:14px;font-weight:500;line-height:1.5;">아이보리 린넨 원피스 (M) 재고가 3개 남았습니다.</div></div>
+          <div class="type-meta-col"><span class="token">body-sm-medium</span><div class="type-detail">14px · 500 · 1.50</div></div>
+        </div>
+        <!-- Small -->
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:13px;font-weight:400;line-height:1.4;color:var(--stone);">마지막 업데이트: 2026년 5월 7일 오후 3:42</div></div>
+          <div class="type-meta-col"><span class="token">caption</span><div class="type-detail">13px · 400 · 1.40</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:13px;font-weight:600;line-height:1.4;">마지막 업데이트: 2026년 5월 7일 오후 3:42</div></div>
+          <div class="type-meta-col"><span class="token">caption-bold</span><div class="type-detail">13px · 600 · 1.40</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:12px;font-weight:500;line-height:1.4;color:var(--stone);">푸터 마이크로카피 · Footer microcopy</div></div>
+          <div class="type-meta-col"><span class="token">micro</span><div class="type-detail">12px · 500 · 1.40</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:11px;font-weight:600;line-height:1.4;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);">COMPONENTS · 사이드바 섹션 헤더</div></div>
+          <div class="type-meta-col"><span class="token">micro-uppercase</span><div class="type-detail">11px · 600 · 1.40 · +0.5px · uppercase</div></div>
+        </div>
+        <!-- Special -->
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:14px;font-weight:500;line-height:1.3;">버튼 레이블 · Button Label</div></div>
+          <div class="type-meta-col"><span class="token">button-md</span><div class="type-detail">14px · 500 · 1.30</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:14px;font-weight:400;line-height:1.5;color:var(--steel);">const shipping = orders.filter(o => o.status === 'shipping')</div></div>
+          <div class="type-meta-col"><span class="token">code-md</span><div class="type-detail">14px · 400 · 1.50</div></div>
+        </div>
+        <div class="type-row">
+          <div class="type-sample"><div style="font-size:13px;font-weight:500;line-height:1.3;background:var(--surface);border:1px solid var(--hairline);border-radius:4px;padding:2px 6px;display:inline;">string · number · boolean</div></div>
+          <div class="type-meta-col"><span class="token">code-inline</span><div class="type-detail">13px · 500 · 1.30</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ SPACING ═══════ -->
+    <section id="spacing" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">간격</div>
+        <div class="ds-section-desc">4px 기본 단위, 8px 주요 증분. 마케팅은 section-lg(96px), 문서는 xxl(32px) 기준.</div>
+      </div>
+      <div class="preview-box">
+        <div class="spacing-list">
+          <div class="spacing-item"><div class="spacing-bar" style="width:4px;"></div><div class="spacing-label"><div class="spacing-token">xxs</div><div class="spacing-px">4px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:8px;"></div><div class="spacing-label"><div class="spacing-token">xs</div><div class="spacing-px">8px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:12px;"></div><div class="spacing-label"><div class="spacing-token">sm</div><div class="spacing-px">12px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:16px;"></div><div class="spacing-label"><div class="spacing-token">md</div><div class="spacing-px">16px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:20px;"></div><div class="spacing-label"><div class="spacing-token">lg</div><div class="spacing-px">20px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:24px;"></div><div class="spacing-label"><div class="spacing-token">xl</div><div class="spacing-px">24px — 카드 내부 패딩 기준</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:32px;"></div><div class="spacing-label"><div class="spacing-token">xxl</div><div class="spacing-px">32px — 프라이싱 카드</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:40px;"></div><div class="spacing-label"><div class="spacing-token">xxxl</div><div class="spacing-px">40px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:48px;"></div><div class="spacing-label"><div class="spacing-token">section-sm</div><div class="spacing-px">48px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:64px;"></div><div class="spacing-label"><div class="spacing-token">section</div><div class="spacing-px">64px</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:96px;"></div><div class="spacing-label"><div class="spacing-token">section-lg</div><div class="spacing-px">96px — 마케팅 밴드 간격</div></div></div>
+          <div class="spacing-item"><div class="spacing-bar" style="width:120px;"></div><div class="spacing-label"><div class="spacing-token">hero</div><div class="spacing-px">120px — 히어로 패딩</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ BORDER RADIUS ═══════ -->
+    <section id="radius" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">모서리 반경</div>
+        <div class="ds-section-desc">카드는 lg(12px), 버튼·뱃지는 full(9999px). md(8px)와 lg(12px) 사이 중간값을 쓰지 않습니다.</div>
+      </div>
+      <div class="preview-box">
+        <div class="radius-grid">
+          <div class="radius-item"><div class="radius-box" style="border-radius:4px;"></div><span class="radius-token">rounded.xs</span><span class="radius-px">4px · 인라인 코드</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:6px;"></div><span class="radius-token">rounded.sm</span><span class="radius-px">6px · 사이드바 아이템</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:8px;"></div><span class="radius-token">rounded.md</span><span class="radius-px">8px · 입력폼·검색</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:12px;"></div><span class="radius-token">rounded.lg</span><span class="radius-px">12px · 카드 (기준값)</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:16px;"></div><span class="radius-token">rounded.xl</span><span class="radius-px">16px · 대형 패널</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:24px;"></div><span class="radius-token">rounded.xxl</span><span class="radius-px">24px · 쇼케이스 타일</span></div>
+          <div class="radius-item"><div class="radius-box" style="border-radius:9999px;width:80px;"></div><span class="radius-token">rounded.full</span><span class="radius-px">9999px · 버튼·뱃지</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ ELEVATION ═══════ -->
+    <section id="elevation" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">그림자 · 고도</div>
+        <div class="ds-section-desc">기본은 플랫(Level 0). 히어로 목업과 추천 카드에만 그림자를 적용합니다.</div>
+      </div>
+      <div class="preview-box surface">
+        <div class="elevation-grid">
+          <div class="elev-item"><div class="elev-box" style="border:1px solid #e5e5e5;">0</div><div class="elev-label">Level 0</div><div class="elev-desc">플랫 — 기본 카드</div></div>
+          <div class="elev-item"><div class="elev-box" style="box-shadow:rgba(0,0,0,0.04) 0 1px 2px 0;">1</div><div class="elev-label">Level 1</div><div class="elev-desc">호버 강조</div></div>
+          <div class="elev-item"><div class="elev-box" style="box-shadow:rgba(0,0,0,0.08) 0 4px 12px 0;">2</div><div class="elev-label">Level 2</div><div class="elev-desc">피처 카드</div></div>
+          <div class="elev-item"><div class="elev-box" style="box-shadow:rgba(0,0,0,0.12) 0 24px 48px -8px;">3</div><div class="elev-label">Level 3</div><div class="elev-desc">히어로 목업</div></div>
+          <div class="elev-item"><div class="elev-box" style="box-shadow:rgba(0,212,164,0.08) 0 8px 24px;border:2px solid #00d4a4;">4</div><div class="elev-label">Level 4</div><div class="elev-desc">민트 글로우 (추천)</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ BUTTONS ═══════ -->
+    <section id="buttons" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">버튼</div>
+        <div class="ds-section-desc">8가지 변형. 모든 버튼은 <code class="token">rounded.full</code> 또는 <code class="token">rounded.md</code>. 사각형 버튼 없음.</div>
+      </div>
+      <div class="btn-grid">
+        <div class="btn-row">
+          <button class="b-primary">버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-primary</span><div class="meta-val">bg: primary · text: on-primary · r: full</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-primary-pressed">버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-primary-pressed</span><div class="meta-val">bg: charcoal — 눌림 상태</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-primary-disabled" disabled>버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-primary-disabled</span><div class="meta-val">bg: hairline · text: muted — 비활성</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-accent">버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-accent-green</span><div class="meta-val">bg: brand-green · text: primary — 민트 강조</div></div>
+        </div>
+        <div class="btn-row" style="background:var(--canvas-dark);padding:16px 20px;border-radius:var(--r-md);">
+          <button class="b-on-dark">버튼 레이블</button>
+          <div class="btn-info"><span class="token" style="color:#7cebcb;background:rgba(0,212,164,0.15);">button-on-dark</span><div class="meta-val" style="color:var(--on-dark-muted);">bg: on-dark — 다크 히어로 밴드 위</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-secondary">버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-secondary</span><div class="meta-val">bg: transparent · border: hairline — 보조 액션</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-ghost">버튼 레이블</button>
+          <div class="btn-info"><span class="token">button-ghost</span><div class="meta-val">bg: transparent · r: md — 사이드바 액션</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="b-link">텍스트 링크</button>
+          <div class="btn-info"><span class="token">button-link</span><div class="meta-val">body-sm-medium · underline on activate</div></div>
+        </div>
+        <div class="btn-row">
+          <div class="b-icon-circ">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="btn-info"><span class="token">button-icon-circular</span><div class="meta-val">32×32px · bg: canvas · border: hairline · r: full</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ CARDS ═══════ -->
+    <section id="cards" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">카드</div>
+        <div class="ds-section-desc">카드 기본 반경은 <code class="token">rounded.lg (12px)</code>. 추천 카드는 민트 테두리 + 글로우.</div>
+      </div>
+      <div class="card-demo-grid">
+        <div>
+          <div class="c-base" style="margin-bottom:12px;">
+            <div class="card-title-demo">card-base</div>
+            <div class="card-body-demo">bg: canvas · border: hairline · p: xl(24px) · r: lg</div>
+          </div>
+          <span class="token">card-base</span>
+        </div>
+        <div>
+          <div class="c-feature" style="margin-bottom:12px;">
+            <div class="card-title-demo">card-feature</div>
+            <div class="card-body-demo">bg: surface · p: xxl(32px) · r: lg · 보더 없음</div>
+          </div>
+          <span class="token">card-feature</span>
+        </div>
+        <div>
+          <div class="c-pricing" style="margin-bottom:12px;">
+            <div class="card-title-demo">pricing-card</div>
+            <div class="card-body-demo">bg: canvas · border: hairline · p: xxl(32px)</div>
+          </div>
+          <span class="token">pricing-card</span>
+        </div>
+        <div>
+          <div class="c-featured" style="margin-bottom:12px;">
+            <div class="card-title-demo" style="color:var(--brand-green-deep);">pricing-card-featured ★</div>
+            <div class="card-body-demo">border: 2px brand-green · shadow: 민트 글로우 Level 4</div>
+          </div>
+          <span class="token">pricing-card-featured</span>
+        </div>
+        <div>
+          <div class="c-testimonial" style="margin-bottom:12px;">
+            <div class="card-title-demo" style="color:#fff;">testimonial-card-feature</div>
+            <div class="card-body-demo">bg: testimonial-orange · text: on-dark · p: section(64px)</div>
+          </div>
+          <span class="token">testimonial-card-feature</span>
+        </div>
+        <div>
+          <div class="c-quote" style="margin-bottom:12px;">
+            <div class="card-title-demo">testimonial-card-quote</div>
+            <div class="card-body-demo">bg: canvas · border: hairline · p: xxl(32px)</div>
+          </div>
+          <span class="token">testimonial-card-quote</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ INPUTS ═══════ -->
+    <section id="inputs" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">입력폼</div>
+        <div class="ds-section-desc">포커스 시 <code class="token">brand-green</code> 2px 테두리로 활성화를 표시합니다.</div>
+      </div>
+      <div class="preview-box">
+        <div class="input-list">
+          <div class="input-row">
+            <div class="input-demo">
+              <div class="preview-label">text-input (기본)</div>
+              <input class="i-base" placeholder="텍스트를 입력하세요" />
+            </div>
+            <div><span class="token">text-input</span><div class="meta-val" style="margin-top:4px;">h: 40px · r: md · border: hairline</div></div>
+          </div>
+          <div class="input-row">
+            <div class="input-demo">
+              <div class="preview-label">text-input-focused</div>
+              <input class="i-focus" value="활성화된 입력 필드" />
+            </div>
+            <div><span class="token">text-input-focused</span><div class="meta-val" style="margin-top:4px;">border: 2px brand-green</div></div>
+          </div>
+          <div class="input-row">
+            <div>
+              <div class="preview-label">search-pill</div>
+              <div class="i-search">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                검색...
+              </div>
+            </div>
+            <div><span class="token">search-pill</span><div class="meta-val" style="margin-top:4px;">h: 36px · bg: surface · r: md</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TABS ═══════ -->
+    <section id="tabs" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">탭 · 토글</div>
+        <div class="ds-section-desc">언더라인 탭(문서), 필 탭(페이지 탑), 토글(가격 선택) 3종을 용도에 맞게 씁니다.</div>
+      </div>
+      <div class="preview-box">
+        <div style="display:flex;flex-direction:column;gap:32px;">
+          <div>
+            <div class="preview-label">segmented-tab / segmented-tab-active</div>
+            <div class="seg-tabs">
+              <button class="seg-tab active">첫 번째 탭</button>
+              <button class="seg-tab">두 번째 탭</button>
+              <button class="seg-tab">세 번째 탭</button>
+            </div>
+            <div class="meta-row" style="margin-top:8px;"><span class="token">segmented-tab</span><span class="meta-val">2px bottom border · ink 활성</span></div>
+          </div>
+          <div>
+            <div class="preview-label">pill-tab / pill-tab-active</div>
+            <div class="pill-tabs-demo">
+              <button class="pt active">가격</button>
+              <button class="pt">로드맵</button>
+            </div>
+            <div class="meta-row" style="margin-top:8px;"><span class="token">pill-tab</span><span class="meta-val">r: full · active: primary 배경</span></div>
+          </div>
+          <div>
+            <div class="preview-label">toggle-monthly-yearly</div>
+            <div class="toggle-demo">
+              <div class="tg-opt active">월간</div>
+              <div class="tg-opt">연간</div>
+            </div>
+            <div class="meta-row" style="margin-top:8px;"><span class="token">toggle-monthly-yearly</span><span class="meta-val">bg: surface · 활성 옵션: canvas 필</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ BADGES ═══════ -->
+    <section id="badges" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">뱃지 · 상태</div>
+        <div class="ds-section-desc">프로모 배너 포함 6가지 뱃지 컴포넌트.</div>
+      </div>
+      <div class="preview-box">
+        <div class="badge-grid">
+          <div class="badge-row">
+            <div class="badge-preview"><span class="bd-discount">Save 20%</span></div>
+            <div class="badge-info"><span class="token">badge-discount</span><div class="meta-val">bg: brand-green · text: primary · caption-bold · r: full</div></div>
+          </div>
+          <div class="badge-row">
+            <div class="badge-preview"><span class="bd-required">REQUIRED</span></div>
+            <div class="badge-info"><span class="token">badge-required</span><div class="meta-val">bg: brand-error · text: on-dark · micro-uppercase · r: sm</div></div>
+          </div>
+          <div class="badge-row">
+            <div class="badge-preview"><span class="bd-type">string</span>&nbsp;<span class="bd-type">boolean</span></div>
+            <div class="badge-info"><span class="token">badge-type</span><div class="meta-val">bg: surface · text: steel · code-sm · r: sm</div></div>
+          </div>
+          <div class="badge-row">
+            <div class="badge-preview"><span class="bd-tag">&lt;Tabs&gt;</span>&nbsp;<span class="bd-tag">&lt;Card&gt;</span></div>
+            <div class="badge-info"><span class="token">badge-tag</span><div class="meta-val">bg: brand-tag 15% · text: brand-tag · caption-bold · r: sm</div></div>
+          </div>
+          <div class="badge-row">
+            <div class="badge-preview">
+              <div class="promo-band" style="display:inline-flex;font-size:13px;">
+                <span style="background:var(--brand-green);color:var(--primary);font-size:11px;font-weight:600;border-radius:9999px;padding:2px 8px;margin-right:8px;">EVENT</span>
+                5월 가정의 달 특별 기획전 안내
+              </div>
+            </div>
+            <div class="badge-info"><span class="token">promo-banner</span><div class="meta-val">bg: canvas-dark · text: on-dark · body-sm-medium</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ NAVIGATION ═══════ -->
+    <section id="navigation" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">내비게이션</div>
+        <div class="ds-section-desc">탑바(마케팅 / 문서)와 사이드바 내비게이션 2종.</div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Topbar (마케팅)</div>
+        <div class="nav-demo-box">
+          <div class="nav-demo-topbar">
+            <div class="nd-logo">
+              <div class="nd-logo-mark"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="#fff" opacity=".9"/></svg></div>
+              ShopAdmin
+            </div>
+            <div class="nd-actions" style="gap:16px;">
+              <span style="font-size:13px;color:var(--steel);">솔루션</span>
+              <span style="font-size:13px;color:var(--steel);">가격</span>
+              <span style="font-size:13px;color:var(--steel);">고객사례</span>
+              <span style="font-size:13px;color:var(--steel);">문서</span>
+            </div>
+            <div class="nd-actions">
+              <button style="background:transparent;border:none;font-size:13px;color:var(--steel);cursor:pointer;font-family:inherit;">세일즈 문의</button>
+              <div class="nd-btn">시작하기</div>
+            </div>
+          </div>
+        </div>
+        <div class="meta-row" style="margin-top:8px;"><span class="token">topbar-marketing</span><span class="meta-val">h: 64px · bg: canvas · bottom-border: hairline-soft</span></div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Topbar (문서)</div>
+        <div class="nav-demo-box">
+          <div class="nav-demo-topbar" style="height:48px;">
+            <div class="nd-logo">
+              <div class="nd-logo-mark"><svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H9zM9 9h4v4H9z" fill="#fff" opacity=".9"/></svg></div>
+              ShopAdmin
+            </div>
+            <div class="nd-search">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              통합검색...
+            </div>
+            <div class="nd-actions">
+              <button style="background:transparent;border:none;font-size:13px;color:var(--steel);cursor:pointer;font-family:inherit;">문의하기</button>
+              <div class="nd-btn" style="background:var(--brand-green);color:var(--primary);">시작하기</div>
+            </div>
+          </div>
+        </div>
+        <div class="meta-row" style="margin-top:8px;"><span class="token">topbar-docs</span><span class="meta-val">h: 56px · search-pill 중앙 · green CTA</span></div>
+      </div>
+
+      <div class="ds-subsection">
+        <div class="ds-subsection-title">Sidebar Navigation</div>
+        <div class="nav-demo-box" style="max-width:220px;">
+          <div class="nav-demo-sidebar">
+            <div class="nd-section-hdr">메인</div>
+            <div class="nd-nav-item active">대시보드</div>
+            <div class="nd-nav-item">주문 관리</div>
+            <div class="nd-nav-item">상품 관리</div>
+            <div class="nd-section-hdr">마케팅</div>
+            <div class="nd-nav-item">쿠폰·프로모션</div>
+            <div class="nd-nav-item">이메일·SMS</div>
+          </div>
+        </div>
+        <div class="meta-row" style="margin-top:8px;">
+          <span class="token">sidebar-nav-item</span><span class="meta-val">inactive: steel · active: bg surface + ink + 500</span>
+          <span class="token">sidebar-section-header</span><span class="meta-val">micro-uppercase · steel</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ CODE ═══════ -->
+    <section id="code" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">코드</div>
+        <div class="ds-section-desc">코드 블록과 인라인 코드 2종. 다크 표면 <code class="token">surface-code</code> 위에 렌더.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <div class="code-block-demo">
+            <div class="code-block-hdr">
+              <span>index.ts</span>
+              <button class="code-copy-btn">복사</button>
+            </div>
+            <div class="code-block-body">
+              <span class="code-kw">const</span> <span class="code-fn">getOrders</span> = <span class="code-kw">async</span> (status: <span class="code-num">string</span>) =&gt; {<br>
+              &nbsp;&nbsp;<span class="code-cmt">// 오늘 접수된 주문만 필터링</span><br>
+              &nbsp;&nbsp;<span class="code-kw">const</span> orders = <span class="code-kw">await</span> <span class="code-fn">db.orders</span>.findMany({<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;where: { status, createdAt: <span class="code-str">"today"</span> }<br>
+              &nbsp;&nbsp;});<br>
+              &nbsp;&nbsp;<span class="code-kw">return</span> orders;<br>
+              }
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">code-block</span><span class="meta-val">bg: surface-code · text: on-dark · r: md · p: md</span></div>
+        </div>
+        <div class="preview-box">
+          <div class="preview-label">code-inline</div>
+          <p style="font-size:14px;color:var(--steel);line-height:1.7;">
+            <code class="code-inline-demo">defaultIndex</code> 속성은 기본 활성 탭을 지정합니다. 타입은
+            <code class="code-inline-demo">number</code> 이고 기본값은 <code class="code-inline-demo">0</code> 입니다.
+          </p>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">code-inline</span><span class="meta-val">bg: surface · text: charcoal · r: xs · border: hairline</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ HERO & BANNER ═══════ -->
+    <section id="hero" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">히어로 · 배너</div>
+        <div class="ds-section-desc">홈(sky 그라디언트)과 스타트업(dark 그라디언트) 히어로 밴드 2종.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <div class="hero-band-sky">
+            <div style="font-size:36px;font-weight:700;letter-spacing:-1px;color:#1a3d4a;margin-bottom:8px;">지식 플랫폼으로<br>가는 가장 빠른 길</div>
+            <div style="font-size:16px;color:#3a3a3c;margin-bottom:20px;">ShopAdmin으로 판매를 시작하세요.</div>
+            <div style="display:flex;gap:8px;">
+              <button class="b-accent" style="font-size:14px;">시작하기</button>
+              <button class="b-secondary" style="font-size:14px;">세일즈 문의</button>
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">hero-band-sky</span><span class="meta-val">sky-from→sky-to 180deg · p: hero(120px)</span></div>
+        </div>
+        <div>
+          <div class="hero-band-dark">
+            <div style="font-size:36px;font-weight:700;letter-spacing:-1px;color:#fff;margin-bottom:8px;">스타트업을 위한<br>특별 프로그램</div>
+            <div style="font-size:16px;color:#b3b3b3;margin-bottom:20px;">초기 스타트업에게 할인과 지원을 제공합니다.</div>
+            <div style="display:flex;gap:8px;">
+              <button class="b-on-dark" style="font-size:14px;">신청하기</button>
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">hero-band-dark</span><span class="meta-val">dark-from→dark-to 135deg · text: on-dark</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ DOCS COMPONENTS ═══════ -->
+    <section id="docs" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">문서 컴포넌트</div>
+        <div class="ds-section-desc">API 속성 테이블, TOC, FAQ 아코디언 등 문서 전용 컴포넌트.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div>
+          <div class="ds-subsection-title">property-row (API 속성 테이블)</div>
+          <div class="prop-table">
+            <div class="prop-row prop-row-hdr"><span>속성명</span><span>타입</span><span>필수</span><span>설명</span></div>
+            <div class="prop-row">
+              <span><code class="code-inline-demo">defaultIndex</code></span>
+              <span><span class="bd-type">number</span></span>
+              <span></span>
+              <span style="font-size:13px;color:var(--steel);">기본 활성 탭 인덱스 (기본값: 0)</span>
+            </div>
+            <div class="prop-row">
+              <span><code class="code-inline-demo">onChange</code></span>
+              <span><span class="bd-type">function</span></span>
+              <span><span class="bd-required">REQUIRED</span></span>
+              <span style="font-size:13px;color:var(--steel);">탭 변경 시 호출되는 콜백 함수</span>
+            </div>
+            <div class="prop-row">
+              <span><code class="code-inline-demo">labels</code></span>
+              <span><span class="bd-type">string[]</span></span>
+              <span><span class="bd-required">REQUIRED</span></span>
+              <span style="font-size:13px;color:var(--steel);">각 탭에 표시할 레이블 배열</span>
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">property-row</span><span class="meta-val">bottom-border: hairline-soft · p: md 0</span></div>
+        </div>
+
+        <div>
+          <div class="ds-subsection-title">faq-accordion-item</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:#fff;border-radius:8px;padding:18px 20px;border:1px solid #ededed;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+              <span style="font-size:16px;font-weight:600;">쇼핑몰 Pro 플랜의 주요 기능은 무엇인가요?</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div style="background:#fff;border-radius:8px;padding:18px 20px;border:1px solid #ededed;">
+              <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+                <span style="font-size:16px;font-weight:600;">무료 체험 기간이 있나요?</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" style="transform:rotate(180deg)"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div style="font-size:15px;color:var(--steel);margin-top:12px;line-height:1.6;">네, 14일 무료 체험이 제공됩니다. 신용카드 없이 시작할 수 있습니다.</div>
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:8px;"><span class="token">faq-accordion-item</span><span class="meta-val">r: md · border: hairline-soft · p: xl</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ DO'S & DON'TS ═══════ -->
+    <section id="rules" class="ds-section">
+      <div class="ds-section-header">
+        <div class="ds-section-title">Do's &amp; Don'ts</div>
+        <div class="ds-section-desc">DESIGN.md 가이드라인 요약.</div>
+      </div>
+      <div class="rules-grid">
+        <div class="rule-card do">
+          <div class="rule-header">✓ Do</div>
+          <ul class="rule-list">
+            <li><code class="token">brand-green</code>은 강조 CTA·활성 상태 전용으로 절제</li>
+            <li>밝은 배경엔 <code class="token">primary</code> 버튼, 다크 히어로엔 <code class="token">button-on-dark</code></li>
+            <li>모든 버튼·뱃지에 <code class="token">rounded.full</code> 적용</li>
+            <li>카드엔 <code class="token">rounded.lg</code> 12px 일관 적용</li>
+            <li>문서 본문은 <code class="token">body-md</code> 16px / LH 1.50 유지</li>
+            <li>마케팅 히어로는 sky·dark 그라디언트 밴드만 사용</li>
+          </ul>
+        </div>
+        <div class="rule-card dont">
+          <div class="rule-header">✗ Don't</div>
+          <ul class="rule-list">
+            <li><code class="token">brand-green</code>을 본문 텍스트나 넓은 표면에 사용</li>
+            <li>민트·태그블루·에러레드·테스티모니얼오렌지 외 추가 액센트 도입</li>
+            <li>일반 문서 카드에 무거운 그림자 적용</li>
+            <li>문서 줄간격을 1.50 이하로 낮추기</li>
+            <li>같은 컴포넌트 계열에 rounded.md(8px)와 rounded.lg(12px) 혼용</li>
+            <li>단일 히어로에 여러 색상 액센트 경합</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  /* Scroll spy — highlight nav link for visible section */
+  const links    = document.querySelectorAll('.ds-nav-link');
+  const sections = document.querySelectorAll('.ds-section');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.ds-nav-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
